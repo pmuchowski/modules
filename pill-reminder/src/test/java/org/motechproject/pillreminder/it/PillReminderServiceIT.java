@@ -1,4 +1,4 @@
-package org.motechproject.pillreminder.service;
+package org.motechproject.pillreminder.it;
 
 import org.joda.time.LocalDate;
 import org.junit.After;
@@ -15,13 +15,14 @@ import org.motechproject.pillreminder.domain.DailyScheduleDetails;
 import org.motechproject.pillreminder.domain.Dosage;
 import org.motechproject.pillreminder.domain.Medicine;
 import org.motechproject.pillreminder.domain.PillRegimen;
+import org.motechproject.pillreminder.service.PillReminderService;
 import org.motechproject.scheduler.service.impl.MotechSchedulerServiceImpl;
 import org.motechproject.testing.osgi.BasePaxIT;
 import org.motechproject.testing.osgi.container.MotechNativeTestContainerFactory;
 import org.ops4j.pax.exam.ExamFactory;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
-import org.ops4j.pax.exam.spi.reactors.PerClass;
+import org.ops4j.pax.exam.spi.reactors.PerSuite;
 import org.osgi.framework.BundleContext;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -37,7 +38,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(PaxExam.class)
-@ExamReactorStrategy(PerClass.class)
+@ExamReactorStrategy(PerSuite.class)
 @ExamFactory(MotechNativeTestContainerFactory.class)
 public class PillReminderServiceIT extends BasePaxIT {
 

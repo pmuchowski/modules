@@ -24,6 +24,11 @@
         </dependency>
         <dependency>
             <groupId>${motech.groupId}</groupId>
+            <artifactId>motech-platform-dataservices</artifactId>
+            <version>${motech.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${motech.groupId}</groupId>
             <artifactId>motech-scheduler</artifactId>
             <version>${motech.version}</version>
         </dependency>
@@ -125,10 +130,10 @@
                         <Export-Package>
                             org.motechproject.pillreminder;version=${project.version},
                             org.motechproject.pillreminder.contract;version=${project.version},
+                            org.motechproject.pillreminder.dao;version=${project.version},
                             org.motechproject.pillreminder.service;version=${project.version}
                         </Export-Package>
                         <Import-Package>
-                            org.motechproject.commons.couchdb.service,
                             org.motechproject.event.listener,
                             org.motechproject.server.config,
                             org.motechproject.server.config.service,

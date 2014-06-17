@@ -4,13 +4,13 @@ import org.joda.time.DateTime;
 import org.motechproject.commons.date.model.Time;
 import org.motechproject.commons.date.util.DateUtil;
 import org.motechproject.event.MotechEvent;
-import org.motechproject.scheduler.service.MotechSchedulerService;
-import org.motechproject.scheduler.builder.CronJobSimpleExpressionBuilder;
-import org.motechproject.scheduler.contract.CronSchedulableJob;
 import org.motechproject.pillreminder.EventKeys;
 import org.motechproject.pillreminder.builder.SchedulerPayloadBuilder;
 import org.motechproject.pillreminder.domain.Dosage;
 import org.motechproject.pillreminder.domain.PillRegimen;
+import org.motechproject.scheduler.builder.CronJobSimpleExpressionBuilder;
+import org.motechproject.scheduler.contract.CronSchedulableJob;
+import org.motechproject.scheduler.service.MotechSchedulerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,14 +35,16 @@ public class PillRegimenJobScheduler {
 
     public void unscheduleJobs(PillRegimen regimen) {
         for (Dosage dosage : regimen.getDosages()) {
-            schedulerService.safeUnscheduleJob(EventKeys.PILLREMINDER_REMINDER_EVENT_SUBJECT_SCHEDULER, dosage.getId());
-            schedulerService.safeUnscheduleRepeatingJob(EventKeys.PILLREMINDER_REMINDER_EVENT_SUBJECT_SCHEDULER, dosage.getId());
+            schedulerService.safeUnscheduleJob(EventKeys.PILLREMINDER_REMINDER_EVENT_SUBJECT_SCHEDULER,
+                    dosage.getId().toString());
+            schedulerService.safeUnscheduleRepeatingJob(EventKeys.PILLREMINDER_REMINDER_EVENT_SUBJECT_SCHEDULER,
+                    dosage.getId().toString());
         }
     }
 
     protected CronSchedulableJob getSchedulableDailyJob(PillRegimen pillRegimen, Dosage dosage) {
         Map<String, Object> eventParams = new SchedulerPayloadBuilder()
-                .withJobId(dosage.getId())
+                .withJobId(dosage.getId().toString())
                 .withDosageId(dosage.getId())
                 .withExternalId(pillRegimen.getExternalId())
                 .payload();

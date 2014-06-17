@@ -15,7 +15,6 @@ import org.motechproject.pillreminder.domain.DailyScheduleDetails;
 import org.motechproject.pillreminder.domain.Dosage;
 import org.motechproject.pillreminder.domain.Medicine;
 import org.motechproject.pillreminder.domain.PillRegimen;
-import org.motechproject.scheduler.factory.MotechSchedulerFactoryBean;
 import org.motechproject.scheduler.service.impl.MotechSchedulerServiceImpl;
 import org.motechproject.testing.osgi.BasePaxIT;
 import org.motechproject.testing.osgi.container.MotechNativeTestContainerFactory;
@@ -23,6 +22,7 @@ import org.ops4j.pax.exam.ExamFactory;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
+import org.osgi.framework.BundleContext;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.matchers.GroupMatcher;
@@ -44,9 +44,9 @@ public class PillReminderServiceIT extends BasePaxIT {
     @Inject
     private PillReminderService pillReminderService;
     @Inject
-    private MotechSchedulerFactoryBean motechSchedulerFactoryBean;
-    @Inject
     private PillRegimenDataService pillRegimenDataService;
+    @Inject
+    private BundleContext bundleContext;
 
     private Scheduler scheduler;
     private LocalDate startDate;
@@ -54,7 +54,7 @@ public class PillReminderServiceIT extends BasePaxIT {
 
     @Before
     public void setUp() {
-        scheduler = motechSchedulerFactoryBean.getQuartzScheduler();
+        scheduler = (Scheduler) getQuartzScheduler(bundleContext);
         startDate = DateUtil.newDate(2020, 1, 20);
         endDate = DateUtil.newDate(2021, 1, 20);
     }

@@ -3,7 +3,6 @@ package org.motechproject.pillreminder.domain;
 import org.joda.time.DateTime;
 import org.motechproject.commons.date.model.Time;
 import org.motechproject.commons.date.util.DateUtil;
-import org.motechproject.mds.annotations.Cascade;
 import org.motechproject.mds.annotations.Entity;
 import org.motechproject.mds.annotations.Field;
 
@@ -19,11 +18,11 @@ public class PillRegimen {
     private String externalId;
 
     @Field(displayName = "Schedule Details")
-    @Cascade(delete = true)
+    //@Cascade(delete = true)
     private DailyScheduleDetails scheduleDetails;
 
     @Field(displayName = "Dosages")
-    @Cascade(delete = true)
+    //@Cascade(delete = true)
     private Set<Dosage> dosages;
 
     public PillRegimen() {

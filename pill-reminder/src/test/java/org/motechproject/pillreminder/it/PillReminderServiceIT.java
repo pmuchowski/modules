@@ -27,12 +27,15 @@ import org.osgi.framework.BundleContext;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.matchers.GroupMatcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -41,6 +44,10 @@ import static org.junit.Assert.assertNotNull;
 @ExamReactorStrategy(PerSuite.class)
 @ExamFactory(MotechNativeTestContainerFactory.class)
 public class PillReminderServiceIT extends BasePaxIT {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PillReminderServiceIT.class);
+
+    private static final String EXTERNAL_ID = UUID.randomUUID().toString();
 
     @Inject
     private PillReminderService pillReminderService;
@@ -62,9 +69,7 @@ public class PillReminderServiceIT extends BasePaxIT {
 
     @Test
     public void shouldSaveTheDailyPillRegimenAndScheduleJob() throws SchedulerException {
-        String externalId = "1234";
-        int scheduledJobsNum = scheduler.getTriggerKeys(
-                GroupMatcher.triggerGroupEquals(MotechSchedulerServiceImpl.JOB_GROUP_NAME)).size();
+        LOG.debug("Running shouldSaveTheDailyPillRegimenAndScheduleJob");
 
         ArrayList<MedicineRequest> medicineRequests = new ArrayList<>();
         MedicineRequest medicineRequest1 = new MedicineRequest("m1", startDate, endDate);
@@ -75,7 +80,13 @@ public class PillReminderServiceIT extends BasePaxIT {
         ArrayList<DosageRequest> dosageContracts = new ArrayList<>();
         dosageContracts.add(new DosageRequest(9, 5, medicineRequests));
 
-        pillReminderService.createNew(new DailyPillRegimenRequest(externalId, 2, 15, 5, dosageContracts));
+        int scheduledJobsNum = scheduler.getTriggerKeys(
+                GroupMatcher.triggerGroupEquals(MotechSchedulerServiceImpl.JOB_GROUP_NAME)).size();
+
+        LOG.debug("We had {} jobs", scheduledJobsNum);
+        pillReminderService.createNew(new DailyPillRegimenRequest(EXTERNAL_ID, 2, 15, 5, dosageContracts));
+        LOG.debug("We have {} jobs", scheduler.getTriggerKeys(GroupMatcher.triggerGroupEquals(MotechSchedulerServiceImpl.JOB_GROUP_NAME)).size());
+
         assertEquals(scheduledJobsNum + 1,
                 scheduler.getTriggerKeys(
                         GroupMatcher.triggerGroupEquals(MotechSchedulerServiceImpl.JOB_GROUP_NAME)).size());
@@ -83,8 +94,7 @@ public class PillReminderServiceIT extends BasePaxIT {
 
     @Test
     public void shouldRenewThePillRegimenAndScheduleJob() throws SchedulerException {
-        int scheduledJobsNum = scheduler.getTriggerKeys(
-                GroupMatcher.triggerGroupEquals(MotechSchedulerServiceImpl.JOB_GROUP_NAME)).size();
+        LOG.info("Running shouldRenewThePillRegimenAndScheduleJob");
 
         ArrayList<MedicineRequest> medicineRequests = new ArrayList<>();
         MedicineRequest medicineRequest1 = new MedicineRequest("m1", startDate, endDate);
@@ -95,8 +105,12 @@ public class PillReminderServiceIT extends BasePaxIT {
         ArrayList<DosageRequest> dosageContracts = new ArrayList<>();
         dosageContracts.add(new DosageRequest(9, 5, medicineRequests));
 
-        String externalId = "123456789";
-        pillReminderService.createNew(new DailyPillRegimenRequest(externalId, 2, 15, 5, dosageContracts));
+        int scheduledJobsNum = scheduler.getTriggerKeys(
+                GroupMatcher.triggerGroupEquals(MotechSchedulerServiceImpl.JOB_GROUP_NAME)).size();
+
+        LOG.debug("We had {} jobs", scheduledJobsNum);
+        pillReminderService.createNew(new DailyPillRegimenRequest(EXTERNAL_ID, 2, 15, 5, dosageContracts));
+        LOG.debug("We have {} jobs", scheduler.getTriggerKeys(GroupMatcher.triggerGroupEquals(MotechSchedulerServiceImpl.JOB_GROUP_NAME)).size());
 
         ArrayList<DosageRequest> newDosageContracts = new ArrayList<>();
         newDosageContracts.add(new DosageRequest(
@@ -104,18 +118,22 @@ public class PillReminderServiceIT extends BasePaxIT {
         newDosageContracts.add(new DosageRequest(
                 4, 5, Arrays.asList(new MedicineRequest("m2", DateUtil.today(), DateUtil.today().plusDays(100)))));
 
-        pillReminderService.renew(new DailyPillRegimenRequest(externalId, 2, 15, 5, newDosageContracts));
+        pillReminderService.renew(new DailyPillRegimenRequest(EXTERNAL_ID, 2, 15, 5, newDosageContracts));
+        LOG.debug("After renewal we have {} jobs",
+                scheduler.getTriggerKeys(GroupMatcher.triggerGroupEquals(MotechSchedulerServiceImpl.JOB_GROUP_NAME)).size());
 
         assertEquals(scheduledJobsNum + 2,
                 scheduler.getTriggerKeys(
                         GroupMatcher.triggerGroupEquals(MotechSchedulerServiceImpl.JOB_GROUP_NAME)).size());
 
-        PillRegimen regimen = pillRegimenDataService.findByExternalId(externalId);
+        PillRegimen regimen = pillRegimenDataService.findByExternalId(EXTERNAL_ID);
         assertNotNull(regimen);
     }
 
     @Test
     public void shouldFindAndUpdateDosageCurrentDate() {
+        LOG.info("Running shouldFindAndUpdateDosageCurrentDate");
+
         Medicine medicine = new Medicine("m1", startDate, endDate);
         Medicine medicine2 = new Medicine("m2", startDate, startDate.plusMonths(3));
         Set<Medicine> medicines = new HashSet<>();
@@ -126,12 +144,12 @@ public class PillReminderServiceIT extends BasePaxIT {
         Set<Dosage> dosages = new HashSet<>();
         dosages.add(dosage);
 
-        PillRegimen pillRegimen = new PillRegimen("1234", dosages, new DailyScheduleDetails(20, 5, 5));
+        PillRegimen pillRegimen = new PillRegimen(EXTERNAL_ID, dosages, new DailyScheduleDetails(20, 5, 5));
 
-        Long dosageId = pillRegimen.getDosages().iterator().next().getId();
+        pillRegimen= pillRegimenDataService.create(pillRegimen);
 
-        pillRegimenDataService.create(pillRegimen);
         Long regimenId = pillRegimen.getId();
+        Long dosageId = pillRegimen.getDosages().iterator().next().getId();
 
         pillReminderService.dosageStatusKnown(regimenId, dosageId, DateUtil.today());
 
@@ -142,6 +160,7 @@ public class PillReminderServiceIT extends BasePaxIT {
 
     @After
     public void tearDown() {
+        pillReminderService.remove(EXTERNAL_ID);
         pillRegimenDataService.deleteAll();
     }
 }

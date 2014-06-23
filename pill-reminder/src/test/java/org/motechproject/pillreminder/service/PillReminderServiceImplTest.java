@@ -7,6 +7,7 @@ import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.motechproject.commons.date.model.Time;
 import org.motechproject.commons.date.util.DateUtil;
+import org.motechproject.pillreminder.builder.PillRegimenBuilder;
 import org.motechproject.pillreminder.contract.DailyPillRegimenRequest;
 import org.motechproject.pillreminder.contract.DosageRequest;
 import org.motechproject.pillreminder.contract.MedicineRequest;
@@ -55,6 +56,8 @@ public class PillReminderServiceImplTest {
 
         DosageRequest dosageRequest = new DosageRequest(9, 5, medicineRequests);
         DailyPillRegimenRequest dailyPillRegimenRequest = new DailyPillRegimenRequest(externalId, 5, 20, 5, asList(dosageRequest));
+        when(pillRegimenDataService.create(argThat(new PillRegimenArgumentMatcher())))
+                .thenReturn(new PillRegimenBuilder().createDailyPillRegimenFrom(dailyPillRegimenRequest));
 
         service.createNew(dailyPillRegimenRequest);
 
@@ -79,6 +82,8 @@ public class PillReminderServiceImplTest {
             dosage.setId(88L);
             add(dosage);
         }};
+        when(pillRegimenDataService.create(argThat(new PillRegimenArgumentMatcher())))
+                .thenReturn(new PillRegimenBuilder().createDailyPillRegimenFrom(dailyPillRegimenRequest));
 
         PillRegimen pillRegimen = new PillRegimen(externalId, dosages, new DailyScheduleDetails(20, 2, 5));
 

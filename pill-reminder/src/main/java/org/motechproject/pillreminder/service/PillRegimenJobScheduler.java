@@ -11,6 +11,8 @@ import org.motechproject.pillreminder.domain.PillRegimen;
 import org.motechproject.scheduler.builder.CronJobSimpleExpressionBuilder;
 import org.motechproject.scheduler.contract.CronSchedulableJob;
 import org.motechproject.scheduler.service.MotechSchedulerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +21,9 @@ import java.util.Map;
 
 @Component
 public class PillRegimenJobScheduler {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PillRegimenJobScheduler.class);
+
     private MotechSchedulerService schedulerService;
 
     @Autowired
@@ -35,6 +40,10 @@ public class PillRegimenJobScheduler {
 
     public void unscheduleJobs(PillRegimen regimen) {
         for (Dosage dosage : regimen.getDosages()) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Unscheduling jobs for dosage with id {}", dosage.getId());
+            }
+
             schedulerService.safeUnscheduleJob(EventKeys.PILLREMINDER_REMINDER_EVENT_SUBJECT_SCHEDULER,
                     dosage.getId().toString());
             schedulerService.safeUnscheduleRepeatingJob(EventKeys.PILLREMINDER_REMINDER_EVENT_SUBJECT_SCHEDULER,
@@ -48,6 +57,11 @@ public class PillRegimenJobScheduler {
                 .withDosageId(dosage.getId())
                 .withExternalId(pillRegimen.getExternalId())
                 .payload();
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(String.format("Scheduling reminder job: JobId='%s', DosageId='%d', ExternalId='%s'",
+                    dosage.getId().toString(), dosage.getId(), pillRegimen.getExternalId()));
+        }
 
         final Time dosageTime = dosage.getDosageTime();
         DateTime cronStartDateTime = DateUtil.newDateTime(dosage.getStartDate(), dosageTime.getHour(), dosageTime.getMinute(), 0);

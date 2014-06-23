@@ -121,6 +121,7 @@ public class Dosage {
         return sortedList.isEmpty() ? null : sortedList.get(0).getEndDate();
     }
 
+    @Ignore
     private Set<Medicine> getMedicinesWithNonNullEndDate() {
         Set<Medicine> medicinesWithNonNullEndDate = new HashSet<>();
         for (Medicine medicine : medicines) {

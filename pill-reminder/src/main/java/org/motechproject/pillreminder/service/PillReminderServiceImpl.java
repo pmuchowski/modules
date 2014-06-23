@@ -27,7 +27,8 @@ public class PillReminderServiceImpl implements PillReminderService {
     public void createNew(DailyPillRegimenRequest dailyPillRegimenRequest) {
         PillRegimen pillRegimen = new PillRegimenBuilder().createDailyPillRegimenFrom(dailyPillRegimenRequest);
         pillRegimen.validate();
-        pillRegimenDataService.create(pillRegimen);
+
+        pillRegimen = pillRegimenDataService.create(pillRegimen);
         pillRegimenJobScheduler.scheduleDailyJob(pillRegimen);
     }
 

@@ -5,6 +5,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.motechproject.commons.date.model.Time;
 import org.motechproject.commons.date.util.DateUtil;
+import org.motechproject.mds.annotations.Cascade;
 import org.motechproject.mds.annotations.Entity;
 import org.motechproject.mds.annotations.Field;
 import org.motechproject.mds.annotations.Ignore;
@@ -29,6 +30,7 @@ public class Dosage {
     private LocalDate responseLastCapturedDate;
 
     @Field(displayName = "Medicines")
+    @Cascade(delete = true)
     private Set<Medicine> medicines;
 
     public Dosage() {

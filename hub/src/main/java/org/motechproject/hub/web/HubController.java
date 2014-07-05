@@ -65,12 +65,6 @@ public class HubController {
         this.contentDistributionService = contentDistributionService;
     }
 
-    @RequestMapping("/sayHello")
-    @ResponseBody
-    public String sayHello() {
-        return subscriptionService.sayHello();
-    }
-
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     @RequestMapping(method = RequestMethod.POST, headers = "Content-Type=application/x-www-form-urlencoded", params = {
             HubConstants.HUB_CALLBACK_PARAM, HubConstants.HUB_MODE_PARAM,

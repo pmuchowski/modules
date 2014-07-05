@@ -235,40 +235,4 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         url = url.replace("{challenge}", uuid);
         return url;
     }
-
-    @Override
-    public String sayHello() {
-        HubTopic hubTopic = new HubTopic("topic_url_1");
-        hubTopicService.create(hubTopic);
-        hubTopic.setTopicUrl("topic_url_2");
-        hubTopicService.create(hubTopic);
-        List<HubTopic> hubTopics = hubTopicService.retrieveAll();
-
-        String test = testQueryonInt();
-
-        return String.format("{\"message\":\"%s\"}",
-                "Hello World " + hubTopics.size() + "," + test
-                        + "testQueryOn2Params" + testQueryOn2Params());
-
-    }
-
-    private String testQueryonInt() {
-        HubSubscription hubTopic = new HubSubscription();
-        hubTopic.setHubTopicId(Integer.valueOf(1));
-        hubTopic.setHubSubscriptionStatusId(Integer
-                .valueOf(SubscriptionStatusLookup.ACCEPTED.getId()));
-        hubTopic.setCallbackUrl("callbackurl");
-
-        hubSubscriptionMDSService.create(hubTopic);
-
-        List<HubSubscription> hubTopics = hubSubscriptionMDSService
-                .findSubByTopicId(1);
-        return "Querying in int is a success" + hubTopics.size();
-    }
-
-    private int testQueryOn2Params() {
-        List<HubSubscription> hubSubscriptions = hubSubscriptionMDSService
-                .findSubByCallbackUrlAndTopicId("callbackurl", 1);
-        return hubSubscriptions.size();
-    }
 }

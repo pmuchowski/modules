@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
-@RequestMapping("/hub")
+@RequestMapping("/")
 public class HubController {
 
     private static final Logger LOGGER = Logger.getLogger(HubController.class);

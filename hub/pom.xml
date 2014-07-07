@@ -2,12 +2,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	 <parent>
-        <artifactId>modules</artifactId>
-        <groupId>org.motechproject</groupId>
-        <version>0.24-SNAPSHOT</version>
-        <relativePath>../</relativePath>
-    </parent>
+	<parent>
+		<artifactId>modules</artifactId>
+		<groupId>org.motechproject</groupId>
+		<version>0.24-SNAPSHOT</version>
+		<relativePath>../</relativePath>
+	</parent>
 
 	<artifactId>motech-platform-hub</artifactId>
 	<groupId>org.motechproject</groupId>
@@ -243,7 +243,7 @@
 		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
 			<artifactId>javax.persistence</artifactId>
-			 <version>${javax.persistence.version}</version>
+			<version>${javax.persistence.version}</version>
 		</dependency>
 
 		<dependency>
@@ -253,4 +253,79 @@
 		</dependency>
 
 	</dependencies>
+	<profiles>
+		<profile>
+			<id>IT</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-resources-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>copy-test-config-files</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${user.home}/.motech/config</outputDirectory>
+									<resources>
+										<resource>
+											<directory>${basedir}/src/test/resources/</directory>
+											<include>bootstrap.properties</include>
+											<include>motech-settings.properties</include>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<version>2.17</version>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<forkCount>1</forkCount>
+							<reuseForks>false</reuseForks>
+						</configuration>
+						<executions>
+							<execution>
+								<id>integration-test</id>
+								<goals>
+									<goal>integration-test</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>verify</id>
+								<goals>
+									<goal>verify</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<version>2.8</version>
+						<executions>
+							<execution>
+								<id>list-dependencies</id>
+								<phase>generate-sources</phase>
+								<goals>
+									<goal>resolve</goal>
+								</goals>
+								<configuration>
+									<outputFile>target/dependencies.list</outputFile>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

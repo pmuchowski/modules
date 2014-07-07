@@ -50,7 +50,7 @@ public class HubSubscriberTransaction implements java.io.Serializable {
     }
 
     public HubSubscriberTransaction(Integer hubDistributionStatusId,
-            Integer hubSubscriptionId, Integer retryCount, Integer contentId) {
+            Integer hubSubscriptionId, Integer contentId) {
         this.hubDistributionStatusId = hubDistributionStatusId;
         this.hubSubscriptionId = hubSubscriptionId;
         this.contentId = contentId;

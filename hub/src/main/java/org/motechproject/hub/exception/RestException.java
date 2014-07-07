@@ -34,5 +34,4 @@ public class RestException extends RuntimeException {
     public HubException getHubException() {
         return hubException;
     }
-
 }

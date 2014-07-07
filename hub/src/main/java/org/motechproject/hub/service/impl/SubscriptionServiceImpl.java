@@ -146,7 +146,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private void createHubSubscription(String callbackUrl, long topicId,
             String secret, String leaseSeconds,
             List<HubSubscription> hubSubscriptions, String topic) {
-        
+
         if (hubSubscriptions == null || hubSubscriptions.isEmpty()) {
 
             HubSubscription hubSubscription = new HubSubscription();

@@ -20,6 +20,7 @@ public class HubPublisherTransaction implements java.io.Serializable {
     @Field(required = true)
     private Integer contentId;
 
+    @Field
     private DateTime notificationTime;
 
     public Integer getHubTopicId() {

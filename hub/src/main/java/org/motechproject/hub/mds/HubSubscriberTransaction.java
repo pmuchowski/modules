@@ -19,9 +19,6 @@ public class HubSubscriberTransaction implements java.io.Serializable {
     @Field(required = true)
     private Integer hubSubscriptionId;
 
-    @Field(required = true)
-    private Integer retryCount;
-
     @Field
     private Integer contentId;
 
@@ -41,14 +38,6 @@ public class HubSubscriberTransaction implements java.io.Serializable {
         this.hubSubscriptionId = hubSubscriptionId;
     }
 
-    public Integer getRetryCount() {
-        return retryCount;
-    }
-
-    public void setRetryCount(Integer retryCount) {
-        this.retryCount = retryCount;
-    }
-
     public Integer getContentId() {
         return contentId;
     }
@@ -64,7 +53,6 @@ public class HubSubscriberTransaction implements java.io.Serializable {
             Integer hubSubscriptionId, Integer retryCount, Integer contentId) {
         this.hubDistributionStatusId = hubDistributionStatusId;
         this.hubSubscriptionId = hubSubscriptionId;
-        this.retryCount = retryCount;
         this.contentId = contentId;
     }
 

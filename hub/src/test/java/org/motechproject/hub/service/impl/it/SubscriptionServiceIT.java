@@ -30,7 +30,7 @@ import org.ops4j.pax.exam.spi.reactors.PerSuite;
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerSuite.class)
 @ExamFactory(MotechNativeTestContainerFactory.class)
-public class SubscriptionServiceIntegrationTest extends BasePaxIT {
+public class SubscriptionServiceIT extends BasePaxIT {
 
     @Inject
     private SubscriptionService subscriptionService;

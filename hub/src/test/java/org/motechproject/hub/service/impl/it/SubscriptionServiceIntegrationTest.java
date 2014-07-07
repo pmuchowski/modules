@@ -4,19 +4,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.hub.exception.HubException;
 import org.motechproject.hub.mds.HubSubscription;
 import org.motechproject.hub.mds.HubTopic;
-import org.motechproject.hub.mds.service.HubDistributionContentMDSService;
-import org.motechproject.hub.mds.service.HubDistributionStatusMDSService;
-import org.motechproject.hub.mds.service.HubPublisherTransactionMDSService;
-import org.motechproject.hub.mds.service.HubSubscriberTransactionMDSService;
 import org.motechproject.hub.mds.service.HubSubscriptionMDSService;
-import org.motechproject.hub.mds.service.HubSubscriptionStatusMDSService;
 import org.motechproject.hub.mds.service.HubTopicMDSService;
 import org.motechproject.hub.model.Modes;
 import org.motechproject.hub.service.SubscriptionService;
@@ -43,56 +37,48 @@ public class SubscriptionServiceIntegrationTest extends BasePaxIT {
     @Inject
     private HubTopicMDSService hubTopicMDSService;
     @Inject
-    private HubDistributionStatusMDSService hubDistributionStatusMDSService;
-    @Inject
-    private HubPublisherTransactionMDSService hubPublisherTransactionMDSService;
-    @Inject
-    private HubSubscriberTransactionMDSService hubSubscriberTransactionMDSService;
-    @Inject
     private HubSubscriptionMDSService hubSubscriptionMDSService;
-    @Inject
-    private HubSubscriptionStatusMDSService hubSubscriptionStatusMDSService;
-    @Inject
-    private HubDistributionContentMDSService hubDistributionContentMDSService;
+    
+    private String callbackUrl = "http://callback/url";
+    private String topicUrl = "http://topic/url";
 
     @Test
     public void testSubscriptionAndUnsubscription() throws HubException {
-        List<HubTopic> hubTopics = hubTopicMDSService.findByTopicUrl("topic_url");
-        List<HubSubscription> hubSubscriptons = hubSubscriptionMDSService.findSubByCallbackUrl("callback_url");
+        List<HubTopic> hubTopics = hubTopicMDSService.findByTopicUrl(topicUrl);
+        List<HubSubscription> hubSubscriptions = hubSubscriptionMDSService.findSubByCallbackUrl(callbackUrl);
         Assert.assertNotNull(hubTopics);
         Assert.assertEquals(0, hubTopics.size());
-        Assert.assertNotNull(hubSubscriptons);
-        Assert.assertEquals(0, hubSubscriptons.size());
+        Assert.assertNotNull(hubSubscriptions);
+        Assert.assertEquals(0, hubSubscriptions.size());
         
         //add a subscription
-        subscriptionService.subscribe("callack_url", Modes.SUBSCRIBE, "topic_url", null, null);
-        hubTopics = hubTopicMDSService.findByTopicUrl("topic_url");
-        hubSubscriptons = hubSubscriptionMDSService.findSubByCallbackUrl("callback_url");
+        subscriptionService.subscribe(callbackUrl, Modes.SUBSCRIBE, topicUrl, null, null);
+        
+        hubTopics = hubTopicMDSService.findByTopicUrl(topicUrl);
         Assert.assertNotNull(hubTopics);
         Assert.assertEquals(1, hubTopics.size());
-        Assert.assertNotNull(hubSubscriptons);
-        Assert.assertEquals(1, hubSubscriptons.size());
+        
+        HubTopic hubTopic = hubTopics.get(0);
+        Assert.assertEquals(topicUrl, hubTopic.getTopicUrl());
+        
+        int topicId = (int) (long) hubTopicMDSService.getDetachedField(hubTopic, "id");
+        
+        hubSubscriptions = hubSubscriptionMDSService.findSubByCallbackUrlAndTopicId(callbackUrl, topicId);
+        Assert.assertNotNull(hubSubscriptions);
+        Assert.assertEquals(1, hubSubscriptions.size());
+        HubSubscription hubSubscription = hubSubscriptions.get(0);
+        Assert.assertEquals(topicId, (int) hubSubscription.getHubTopicId());
+        Assert.assertEquals(callbackUrl, hubSubscription.getCallbackUrl());
         
         //delete the subscription
-        subscriptionService.subscribe("callack_url", Modes.UNSUBSCRIBE, "topic_url", null, null);
-        hubTopics = hubTopicMDSService.findByTopicUrl("topic_url");
-        hubSubscriptons = hubSubscriptionMDSService.findSubByCallbackUrl("callback_url");
+        hubSubscriptionMDSService.delete(hubSubscription);
+        hubTopicMDSService.delete(hubTopic);
+        hubTopics = hubTopicMDSService.findByTopicUrl(topicUrl);
+        hubSubscriptions = hubSubscriptionMDSService.findSubByCallbackUrlAndTopicId(callbackUrl, topicId);
         Assert.assertNotNull(hubTopics);
         Assert.assertEquals(0, hubTopics.size());
-        Assert.assertNotNull(hubSubscriptons);
-        Assert.assertEquals(0, hubSubscriptons.size());
-    }
-    
-    
-    @After
-    public void tearDown() {
-        hubTopicMDSService.deleteAll();
-        hubDistributionStatusMDSService.deleteAll();
-        hubPublisherTransactionMDSService.deleteAll();
-        hubSubscriberTransactionMDSService.deleteAll();
-        hubSubscriptionMDSService.deleteAll();
-        hubSubscriptionStatusMDSService.deleteAll();
-        hubDistributionContentMDSService.deleteAll();
+        Assert.assertNotNull(hubSubscriptions);
+        Assert.assertEquals(0, hubSubscriptions.size());
     }
 
 }

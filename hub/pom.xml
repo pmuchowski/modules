@@ -18,6 +18,7 @@
 
 	<properties>
 		<modules.root.dir>${basedir}/..</modules.root.dir>
+		<javax.persistence.version>2.1.0</javax.persistence.version>
 	</properties>
 
 	<build>
@@ -243,7 +244,7 @@
 		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
 			<artifactId>javax.persistence</artifactId>
-			 <version>2.1.0</version>
+			 <version>${javax.persistence.version}</version>
 		</dependency>
 
 		<dependency>

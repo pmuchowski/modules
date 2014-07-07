@@ -21,7 +21,7 @@
 		auto-export="interfaces" />
 
 
-	<bean id="moduleRegistrationData" class="org.motechproject.osgi.web.ModuleRegistrationData">
+	<!--  bean id="moduleRegistrationData" class="org.motechproject.osgi.web.ModuleRegistrationData">
 		<constructor-arg name="url" value="../hub/resources/index.html" />
 		<constructor-arg name="moduleName" value="hub" />
 		<constructor-arg name="angularModules">
@@ -34,7 +34,7 @@
 				<entry key="messages" value="../hub/resources/messages/" />
 			</map>
 		</constructor-arg>
-	</bean>
+	</bean> -->
 	<osgi:reference id="hubTopicMDSService"
 		interface="org.motechproject.hub.mds.service.HubTopicMDSService" />
 	<osgi:reference id="hubDistributionStatusMDSService"

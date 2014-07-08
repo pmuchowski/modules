@@ -16,14 +16,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.motechproject.http.agent.service.HttpAgent;
-import org.motechproject.http.agent.service.impl.HttpAgentImpl;
 import org.motechproject.hub.mds.HubSubscription;
 import org.motechproject.hub.mds.HubSubscriptionStatus;
 import org.motechproject.hub.mds.HubTopic;
 import org.motechproject.hub.mds.service.HubSubscriptionMDSService;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * This is a test class which tests the <code>run()</code> method of this

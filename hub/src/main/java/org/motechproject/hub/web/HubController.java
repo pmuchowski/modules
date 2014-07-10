@@ -1,5 +1,7 @@
 package org.motechproject.hub.web;
 
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -11,14 +13,19 @@ import org.motechproject.hub.exception.HubError;
 import org.motechproject.hub.exception.HubException;
 import org.motechproject.hub.exception.RestException;
 import org.motechproject.hub.model.Modes;
+import org.motechproject.hub.model.SettingsDTO;
 import org.motechproject.hub.service.ContentDistributionService;
 import org.motechproject.hub.service.SubscriptionService;
 import org.motechproject.hub.util.HubConstants;
 import org.motechproject.hub.validation.HubValidator;
+import org.motechproject.server.config.SettingsFacade;
+import org.osgi.framework.BundleException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,6 +38,8 @@ public class HubController {
 
     private static final Logger LOGGER = Logger.getLogger(HubController.class);
 
+    private static final String HUB_BASE_URL = "hubBaseUrl";
+
     @Autowired
     private HubValidator hubValidator;
 
@@ -39,6 +48,14 @@ public class HubController {
 
     @Autowired
     private ContentDistributionService contentDistributionService;
+
+    private SettingsFacade settingsFacade;
+
+    @Autowired
+    public HubController(
+            @Qualifier("hubSettings") final SettingsFacade settingsFacade) {
+        this.settingsFacade = settingsFacade;
+    }
 
     public HubValidator getHubValidator() {
         return hubValidator;
@@ -63,6 +80,22 @@ public class HubController {
     public void setContentDistributionService(
             ContentDistributionService contentDistributionService) {
         this.contentDistributionService = contentDistributionService;
+    }
+
+    @RequestMapping(value = "/settings", method = RequestMethod.GET)
+    @ResponseBody
+    public SettingsDTO getSettings() {
+        SettingsDTO dto = new SettingsDTO();
+        dto.setHubBaseUrl(getPropertyValue(HUB_BASE_URL));
+        return dto;
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/settings", method = RequestMethod.POST)
+    public void saveSettings(@RequestBody SettingsDTO settings)
+            throws BundleException {
+
+        settingsFacade.setProperty(HUB_BASE_URL, settings.getHubBaseUrl());
     }
 
     @ResponseStatus(value = HttpStatus.ACCEPTED)
@@ -154,5 +187,10 @@ public class HubController {
         error.setApplication(HubConstants.APP_NAME);
 
         return error;
+    }
+
+    private String getPropertyValue(final String propertyKey) {
+        String propertyValue = settingsFacade.getProperty(propertyKey);
+        return isNotBlank(propertyValue) ? propertyValue : null;
     }
 }

@@ -3,6 +3,10 @@ package org.motechproject.hub.mds;
 import org.motechproject.mds.annotations.Entity;
 import org.motechproject.mds.annotations.Field;
 
+/**
+ * Stores the content and content type received from the publisher when there is
+ * an update in a topic
+ */
 @Entity
 public class HubDistributionContent implements java.io.Serializable {
 

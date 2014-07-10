@@ -17,5 +17,5 @@ public final class HubConstants {
     public static final String HUB_SECRET_PARAM = "hub.secret";
     public static final String HUB_CHALLENGE_PARAM = "hub.challenge";
 
-    public static final String APP_NAME = "motech-platform-hub";
+    public static final String APP_NAME = "hub";
 }

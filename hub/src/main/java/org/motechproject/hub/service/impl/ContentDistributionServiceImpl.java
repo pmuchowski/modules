@@ -20,7 +20,6 @@ import org.motechproject.hub.service.ContentDistributionService;
 import org.motechproject.hub.service.DistributionServiceDelegate;
 import org.motechproject.hub.util.HubConstants;
 import org.motechproject.hub.util.HubUtils;
-import org.motechproject.hub.web.HubController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +29,8 @@ import org.springframework.stereotype.Service;
 public class ContentDistributionServiceImpl implements
         ContentDistributionService {
 
-    private static final Logger LOGGER = Logger.getLogger(HubController.class);
+    private static final Logger LOGGER = Logger
+            .getLogger(ContentDistributionService.class);
 
     private HubTopicMDSService hubTopicMDSService;
 

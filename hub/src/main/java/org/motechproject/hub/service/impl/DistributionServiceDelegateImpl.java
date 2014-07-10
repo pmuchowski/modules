@@ -3,7 +3,9 @@ package org.motechproject.hub.service.impl;
 import org.motechproject.http.agent.service.HttpAgent;
 import org.motechproject.http.agent.service.Method;
 import org.motechproject.hub.service.DistributionServiceDelegate;
+import org.motechproject.server.config.SettingsFacade;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -38,6 +40,8 @@ public class DistributionServiceDelegateImpl implements
         this.retryInterval = retryInterval;
     }
 
+    private SettingsFacade settingsFacade;
+
     public HttpAgent getHttpAgentImpl() {
         return httpAgentImpl;
     }
@@ -47,8 +51,10 @@ public class DistributionServiceDelegateImpl implements
     }
 
     @Autowired
-    public DistributionServiceDelegateImpl(HttpAgent httpAgentImpl) {
+    public DistributionServiceDelegateImpl(HttpAgent httpAgentImpl,
+            @Qualifier("hubSettings") final SettingsFacade settingsFacade) {
         this.httpAgentImpl = httpAgentImpl;
+        this.settingsFacade = settingsFacade;
     }
 
     @Override
@@ -67,11 +73,12 @@ public class DistributionServiceDelegateImpl implements
     public void distribute(String callbackUrl, String content,
             MediaType contentType, String topicUrl) {
 
+        String hubBaseUrl = settingsFacade.getProperty("hubBaseUrl");
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(contentType);
-        headers.add("Link",
-                "<http://localhost:8080/motech-platform-hub/hub/>; rel=\"hub\", <"
-                        + topicUrl + ">; rel=\"self\"");
+        headers.add("Link", "<" + hubBaseUrl + ">; rel=\"hub\", <" + topicUrl
+                + ">; rel=\"self\"");
         HttpEntity<String> entity = new HttpEntity<String>(content, headers);
 
         httpAgentImpl.execute(callbackUrl, entity, Method.POST);

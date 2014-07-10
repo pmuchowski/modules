@@ -86,7 +86,7 @@
                             org.slf4j,
                             org.springframework.beans.factory.annotation,
                             org.motechproject.http.agent.service;version=${project.version},
-
+                            org.motechproject.bundle.extender,
                             org.motechproject.server.config,
                             org.motechproject.server.config.service,
                             *
@@ -157,6 +157,8 @@
             <groupId>org.springframework</groupId>
             <artifactId>org.springframework.orm</artifactId>
         </dependency>
+
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>org.springframework.beans</artifactId>
@@ -203,6 +205,8 @@
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
+
+
         <dependency>
             <groupId>org.eclipse.gemini</groupId>
             <artifactId>org.eclipse.gemini.blueprint.core</artifactId>
@@ -211,11 +215,6 @@
             <groupId>org.motechproject</groupId>
             <artifactId>http-agent</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.motechproject</groupId>
-            <artifactId>motech-platform-osgi-extender-fragment</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -233,6 +232,14 @@
             <artifactId>motech-platform-dataservices</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>motech-platform-osgi-extender-fragment</artifactId>
+            <version>${project.version}</version>
+
+        </dependency>
+
 
     </dependencies>
     <profiles>

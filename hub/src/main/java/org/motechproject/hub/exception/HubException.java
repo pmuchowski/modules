@@ -1,7 +1,7 @@
 package org.motechproject.hub.exception;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 @SuppressWarnings("serial")
 public class HubException extends Exception {
@@ -36,7 +36,7 @@ public class HubException extends Exception {
     }
 
     public String getErrorMessage() {
-        if (reason == null || reason.length() < 1) {
+        if (reason == null || StringUtils.length(reason) < 1) {
             return this.getMessage();
         } else {
             return this.getMessage() + ". Reason: " + reason;
@@ -53,16 +53,7 @@ public class HubException extends Exception {
     }
 
     private String getStackTraceString() {
-        String stackTrace = null;
-
-        StringWriter stringWriter = new StringWriter();
-        PrintWriter printWriter = new PrintWriter(stringWriter, true);
-        this.printStackTrace(printWriter);
-        printWriter.flush();
-        stringWriter.flush();
-        stackTrace = stringWriter.toString();
-
-        return stackTrace;
+        return ExceptionUtils.getStackTrace(this);
     }
 
     public String getReason() {

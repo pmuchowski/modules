@@ -3,6 +3,9 @@ package org.motechproject.hub.mds;
 import org.motechproject.mds.annotations.Entity;
 import org.motechproject.mds.annotations.Field;
 
+/**
+ * Stores the topic urls
+ */
 @Entity
 public class HubTopic implements java.io.Serializable {
 

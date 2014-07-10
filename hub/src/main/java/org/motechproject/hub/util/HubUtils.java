@@ -2,12 +2,11 @@ package org.motechproject.hub.util;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
 
 import org.apache.log4j.Logger;
+import org.motechproject.commons.date.util.DateUtil;
 
 public final class HubUtils {
 
@@ -48,15 +47,6 @@ public final class HubUtils {
     }
 
     public static Date getCurrentDateTime() {
-        SimpleDateFormat format = new SimpleDateFormat(
-                "yyyy-MM-dd HH:mm:ss.mmm");
-        String dateTime = format.format(new Date());
-        Date date;
-        try {
-            date = format.parse(dateTime);
-        } catch (ParseException e) {
-            date = null;
-        }
-        return date;
+        return DateUtil.now().toDate();
     }
 }

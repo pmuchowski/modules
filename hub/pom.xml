@@ -22,12 +22,10 @@
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -42,14 +40,12 @@
                             org.motechproject.hub.service;version=${project.version},
                             org.motechproject.hub.mds;version=${project.version},
                             org.motechproject.hub.mds.service;version=${project.version},
-
                             org.motechproject.hub.mds.service.impl;version=${project.version},
                             org.motechproject.hub.exception;version=${project.version},
                             org.motechproject.hub.model;version=${project.version},
                             org.motechproject.hub.service.impl;version=${project.version}
                         </Export-Package>
                         <Import-Package>
-
                             org.springframework.web.servlet.config,
                             org.apache.commons.dbcp,
                             org.apache.commons.lang,
@@ -81,8 +77,6 @@
                             javax.validation.metadata,
                             javax.validation.spi,
                             !com.googlecode.jtype,
-                            <!-- org.hibernate.validator.engine, -->
-                            <!--org.motechproject.commons.date.util, org.motechproject.event.metrics, -->
                             org.slf4j,
                             org.springframework.beans.factory.annotation,
                             org.motechproject.http.agent.service;version=${project.version},
@@ -94,7 +88,6 @@
                     </instructions>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -119,31 +112,15 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.0</version>
-                <configuration>
-                    <verbose>true</verbose>
-                    <fork>true</fork>
-                    <executable></executable>
-                    <compilerVersion>1.7</compilerVersion>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
     <dependencies>
-
-
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>motech-platform-osgi-web-util</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- <dependency> <groupId>org.objectweb.asm</groupId> <artifactId>com.springsource.org.objectweb.asm</artifactId> 
-            <version>1.5.3</version> </dependency> -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>com.springsource.org.apache.commons.fileupload</artifactId>
@@ -152,13 +129,10 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>com.springsource.org.apache.commons.dbcp</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>org.springframework.orm</artifactId>
         </dependency>
-
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>org.springframework.beans</artifactId>
@@ -173,7 +147,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>motech-platform-osgi-web-util</artifactId>
@@ -205,8 +178,6 @@
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
-
-
         <dependency>
             <groupId>org.eclipse.gemini</groupId>
             <artifactId>org.eclipse.gemini.blueprint.core</artifactId>
@@ -216,7 +187,6 @@
             <artifactId>http-agent</artifactId>
             <version>${project.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>org.motechproject.org.postgresql</artifactId>
@@ -226,21 +196,16 @@
             <artifactId>javax.persistence</artifactId>
             <version>${javax.persistence.version}</version>
         </dependency>
-
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>motech-platform-dataservices</artifactId>
             <version>${project.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-platform-osgi-extender-fragment</artifactId>
             <version>${project.version}</version>
-
         </dependency>
-
-
     </dependencies>
     <profiles>
         <profile>
@@ -271,12 +236,10 @@
                             </execution>
                         </executions>
                     </plugin>
-
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-dependency-plugin</artifactId>
                     </plugin>
-
                 </plugins>
             </build>
         </profile>

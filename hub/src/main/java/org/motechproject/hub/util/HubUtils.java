@@ -5,12 +5,13 @@ import java.net.NetworkInterface;
 import java.util.Date;
 import java.util.Enumeration;
 
-import org.apache.log4j.Logger;
 import org.motechproject.commons.date.util.DateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class HubUtils {
 
-    private static final Logger LOGGER = Logger.getLogger(HubUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HubUtils.class);
 
     private HubUtils() {
 

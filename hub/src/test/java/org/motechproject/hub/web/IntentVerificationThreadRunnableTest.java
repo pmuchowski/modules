@@ -24,60 +24,63 @@ import org.motechproject.hub.mds.service.HubSubscriptionMDSService;
 /**
  * This is a test class which tests the <code>run()</code> method of this
  * <code>ThreadRunnable</code>
- * 
+ *
  * @author Anuranjan
- * 
+ *
  */
 @RunWith(MockitoJUnitRunner.class)
 public class IntentVerificationThreadRunnableTest {
 
-	@Mock
-	private HubSubscriptionMDSService hubSubscriptionMDSService;
-	@Mock
-	private HttpAgent httpAgentImpl;
-	
-	@InjectMocks
-	private IntentVerificationThreadRunnable intentVerificationThreadRunnable = new IntentVerificationThreadRunnable(hubSubscriptionMDSService,
-			httpAgentImpl);
+    @Mock
+    private HubSubscriptionMDSService hubSubscriptionMDSService;
+    @Mock
+    private HttpAgent httpAgentImpl;
 
-	private String callbackUrl;
-	private String topic;
-	private String mode;
+    @InjectMocks
+    private IntentVerificationThreadRunnable intentVerificationThreadRunnable = new IntentVerificationThreadRunnable(
+            hubSubscriptionMDSService, httpAgentImpl);
 
-	private HubSubscription subscription;
-	private HubTopic hubTopic;
-	private HubSubscriptionStatus subscriptionStatus;
+    private String callbackUrl;
+    private String topic;
+    private String mode;
 
-	@Before
-	public void setUp() {
-		callbackUrl = "callback_url";
-		topic = "topic_url";
-		mode = "subscribe";
-		
-		intentVerificationThreadRunnable.setHttpAgentImpl(httpAgentImpl);
-		hubTopic = new HubTopic();
-		hubTopic.setTopicUrl("topic url");
-		subscription = new HubSubscription();
-		subscription.setCallbackUrl(callbackUrl);
-		subscription.setHubTopicId(1);
+    private HubSubscription subscription;
+    private HubTopic hubTopic;
+    private HubSubscriptionStatus subscriptionStatus;
 
-		subscriptionStatus = new HubSubscriptionStatus();
-		subscriptionStatus.setSubscriptionStatusCode("intent_verified");
+    @Before
+    public void setUp() {
+        callbackUrl = "callback_url";
+        topic = "topic_url";
+        mode = "subscribe";
 
-		subscription.setHubSubscriptionStatusId(3);
-		intentVerificationThreadRunnable.setCallbackUrl(callbackUrl);
-		intentVerificationThreadRunnable.setTopic(topic);
-		intentVerificationThreadRunnable.setMode(mode);
-		List<HubSubscription> subscriptions = new ArrayList<HubSubscription>();
-		subscriptions.add(subscription);
-		when(hubSubscriptionMDSService.findSubByCallbackUrlAndTopicId(callbackUrl, 1)).thenReturn(subscriptions);
-	}
+        intentVerificationThreadRunnable.setHttpAgentImpl(httpAgentImpl);
+        hubTopic = new HubTopic();
+        hubTopic.setTopicUrl("topic url");
+        subscription = new HubSubscription();
+        subscription.setCallbackUrl(callbackUrl);
+        subscription.setHubTopicId(1);
 
-	@Test
-	public void run() {
-		httpAgentImpl = Mockito.mock(HttpAgent.class);
-		intentVerificationThreadRunnable.setHttpAgentImpl(httpAgentImpl);
-		intentVerificationThreadRunnable.run();
-		verify(hubSubscriptionMDSService).findSubByCallbackUrlAndTopicId(anyString(), (Integer)anyObject());
-	}
+        subscriptionStatus = new HubSubscriptionStatus();
+        subscriptionStatus.setSubscriptionStatusCode("intent_verified");
+
+        subscription.setHubSubscriptionStatusId(3);
+        intentVerificationThreadRunnable.setCallbackUrl(callbackUrl);
+        intentVerificationThreadRunnable.setTopic(topic);
+        intentVerificationThreadRunnable.setMode(mode);
+        List<HubSubscription> subscriptions = new ArrayList<HubSubscription>();
+        subscriptions.add(subscription);
+        when(
+                hubSubscriptionMDSService.findSubByCallbackUrlAndTopicId(
+                        callbackUrl, 1)).thenReturn(subscriptions);
+    }
+
+    @Test
+    public void run() {
+        httpAgentImpl = Mockito.mock(HttpAgent.class);
+        intentVerificationThreadRunnable.setHttpAgentImpl(httpAgentImpl);
+        intentVerificationThreadRunnable.run();
+        verify(hubSubscriptionMDSService).findSubByCallbackUrlAndTopicId(
+                anyString(), (Integer) anyObject());
+    }
 }

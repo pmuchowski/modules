@@ -15,6 +15,9 @@ public class HubDistributionStatus implements java.io.Serializable {
     @Field(required = true)
     private Integer distributionStatusId;
 
+    @Field(required = true)
+    private String distributionStatusCode;
+
     public Integer getDistributionStatusId() {
         return distributionStatusId;
     }
@@ -30,9 +33,6 @@ public class HubDistributionStatus implements java.io.Serializable {
     public void setDistributionStatusCode(String distributionStatusCode) {
         this.distributionStatusCode = distributionStatusCode;
     }
-
-    @Field(required = true)
-    private String distributionStatusCode;
 
     public HubDistributionStatus() {
     }

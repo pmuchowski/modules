@@ -1,5 +1,6 @@
 package org.motechproject.http.agent.service;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -73,6 +74,16 @@ public enum Method {
     public abstract void execute(RestTemplate restTemplate, String url,
             Object request);
 
+    public static Method fromString(String str) {
+        for (Method method : values()) {
+            if (StringUtils.equalsIgnoreCase(method.name(), str)) {
+                return method;
+            }
+        }
+        return POST;
+    }
+
     public abstract ResponseEntity<?> executeWithReturnType(
             RestTemplate restTemplate, String url, Object request);
+
 }

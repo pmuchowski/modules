@@ -24,25 +24,27 @@ public class HubDistributionContentMDSServiceIT extends BasePaxIT {
 
     @Inject
     private HubDistributionContentMDSService hubDistributionContentMDSService;
-    
+
     private String content = "content";
     private String contentType = MediaType.APPLICATION_XML.toString();
-    
+
     @Test
     public void testHubDistributionContent() {
-        List<HubDistributionContent> hubDistributionContents = hubDistributionContentMDSService.retrieveAll();
+        List<HubDistributionContent> hubDistributionContents = hubDistributionContentMDSService
+                .retrieveAll();
         Assert.assertNotNull(hubDistributionContents);
-        
+
         HubDistributionContent hubDistributioncontent = new HubDistributionContent();
         hubDistributioncontent.setContent(content);
         hubDistributioncontent.setContentType(contentType);
-        
+
         hubDistributionContentMDSService.create(hubDistributioncontent);
-        
-        hubDistributionContents = hubDistributionContentMDSService.retrieveAll();
+
+        hubDistributionContents = hubDistributionContentMDSService
+                .retrieveAll();
         Assert.assertNotNull(hubDistributionContents);
-        
+
         hubDistributionContentMDSService.delete(hubDistributioncontent);
-        
+
     }
 }

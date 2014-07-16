@@ -6,9 +6,9 @@ import org.motechproject.hub.model.Modes;
 /**
  * This is an interface which provides business logic for a
  * subscription/unsubscription request
- * 
+ *
  * @author Anuranjan
- * 
+ *
  */
 public interface SubscriptionService {
 
@@ -16,7 +16,7 @@ public interface SubscriptionService {
      * This method executes the business logic for subscribing/unsubscribing to
      * a topic. The subscriber provides the callback URL where the update
      * notification should be sent.
-     * 
+     *
      * @param callbackUrl
      *            - a <code>String</code> representing the subscriber's callback
      *            URL where notifications should be delivered

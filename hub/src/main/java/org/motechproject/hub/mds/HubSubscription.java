@@ -83,7 +83,5 @@ public class HubSubscription implements java.io.Serializable {
         this.callbackUrl = callbackUrl;
         this.leaseSeconds = leaseSeconds;
         this.secret = secret;
-
     }
-
 }

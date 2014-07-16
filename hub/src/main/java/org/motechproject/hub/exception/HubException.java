@@ -3,8 +3,15 @@ package org.motechproject.hub.exception;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 
-@SuppressWarnings("serial")
+/**
+ * This class is used for custome exception for the Hub Module
+ *
+ * @author anuranjan
+ *
+ */
 public class HubException extends Exception {
+
+    private static final long serialVersionUID = 6944669766477120363L;
 
     private HubErrors hubErrors;
     private String reason;
@@ -36,7 +43,7 @@ public class HubException extends Exception {
     }
 
     public String getErrorMessage() {
-        if (reason == null || StringUtils.length(reason) < 1) {
+        if (StringUtils.length(reason) < 1) {
             return this.getMessage();
         } else {
             return this.getMessage() + ". Reason: " + reason;

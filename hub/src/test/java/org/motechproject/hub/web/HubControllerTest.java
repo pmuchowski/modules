@@ -30,9 +30,9 @@ import org.springframework.http.HttpStatus;
 /**
  * This is a test class which tests the APIs inside <code>HubController</code>
  * class
- * 
+ *
  * @author Anuranjan
- * 
+ *
  */
 @RunWith(MockitoJUnitRunner.class)
 public class HubControllerTest {
@@ -78,7 +78,7 @@ public class HubControllerTest {
 
     /**
      * Tests the subscribe method with valid input parameters
-     * 
+     *
      * @throws HubException
      */
     @Test
@@ -122,7 +122,7 @@ public class HubControllerTest {
 
     /**
      * Tests the subscribe method with invalid input parameters
-     * 
+     *
      * @throws HubException
      */
     @Test
@@ -148,7 +148,7 @@ public class HubControllerTest {
 
     /**
      * Tests the publish method with valid input parameters
-     * 
+     *
      * @throws HubException
      */
     @Test
@@ -176,7 +176,7 @@ public class HubControllerTest {
 
     /**
      * Tests the publish method with invalid input parameters
-     * 
+     *
      * @throws HubException
      */
     @Test

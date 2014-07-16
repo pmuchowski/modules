@@ -3,7 +3,6 @@ package org.motechproject.hub.service.impl;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
 import org.motechproject.http.agent.service.HttpAgent;
 import org.motechproject.http.agent.service.Method;
 import org.motechproject.hub.exception.ApplicationErrors;
@@ -17,6 +16,8 @@ import org.motechproject.hub.model.SubscriptionStatusLookup;
 import org.motechproject.hub.service.SubscriptionService;
 import org.motechproject.hub.util.HubConstants;
 import org.motechproject.hub.web.IntentVerificationThreadRunnable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -28,12 +29,15 @@ import org.springframework.stereotype.Service;
 /**
  * This is the implementation class of the interface
  * <code>SubscriptionService</code>
- * 
+ *
  * @author Anuranjan
- * 
+ *
  */
 @Service(value = "subscriptionService")
 public class SubscriptionServiceImpl implements SubscriptionService {
+
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(SubscriptionServiceImpl.class);
 
     private static final String INTENT_VERIFICATION_PARAMS = "?hub.mode={mode}&hub.topic={topic}&hub.challenge={challenge}";
 
@@ -56,9 +60,6 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     }
 
     private HttpAgent httpAgentImpl;
-
-    private static final Logger LOGGER = Logger
-            .getLogger(SubscriptionServiceImpl.class);
 
     public HttpAgent getHttpAgentImpl() {
         return httpAgentImpl;
@@ -166,13 +167,13 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             hubSubscriptionMDSService.create(hubSubscription);
 
         } else if (hubSubscriptions.size() > 1) {
-            LOGGER.error(String
-                    .format("There are multiple subscriptions for the topic %s and callback url '%s'",
-                            topic, callbackUrl));
+            LOGGER.error(
+                    "There are multiple subscriptions for the topic {} and callback url '{}'",
+                    new Object[] { topic, callbackUrl });
         } else {
-            LOGGER.error(String
-                    .format("The topic %s is already subscribed to the callback url '%s'. Starting intent verification...",
-                            topic, callbackUrl));
+            LOGGER.error(
+                    "The topic {} is already subscribed to the callback url '{}'. Starting intent verification...",
+                    new Object[] { topic, callbackUrl });
         }
     }
 
@@ -220,9 +221,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             } else if (hubSubscriptions.size() == 1) {
                 hubSubscriptionMDSService.delete(hubSubscriptions.get(0));
             } else {
-                LOGGER.error(String
-                        .format("There are multiple subscriptions for the topic %s and callback url '%s'",
-                                topic, callbackUrl));
+                LOGGER.error(
+                        "There are multiple subscriptions for the topic {} and callback url '{}'",
+                        new Object[] { topic, callbackUrl });
             }
         }
     }

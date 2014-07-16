@@ -26,9 +26,9 @@ import org.springframework.http.ResponseEntity;
 /**
  * This class tests the method inside
  * <code>DistributionServiceDelegateImpl</code> class
- * 
+ *
  * @author Anuranjan
- * 
+ *
  */
 @SuppressWarnings("unchecked")
 @RunWith(MockitoJUnitRunner.class)

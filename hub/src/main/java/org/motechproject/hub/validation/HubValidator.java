@@ -10,16 +10,16 @@ import org.springframework.stereotype.Service;
 
 /**
  * This class validates the input parameters for subscription and publish APIs
- * 
+ *
  * @author Anuranjan
- * 
+ *
  */
 @Service
 public class HubValidator {
 
     /**
      * Validates the input parameters for a subscription request
-     * 
+     *
      * @param callbackUrl
      *            - a <code>String</code> representing the subscriber's callback
      *            URL where notifications should be delivered
@@ -41,7 +41,7 @@ public class HubValidator {
 
         List<String> errors = new ArrayList<String>();
 
-        if (mode == null || mode.isEmpty()) {
+        if (StringUtils.isBlank(mode)) {
             errors.add("hub.mode must be provided");
         } else {
             boolean isModeValid = true;
@@ -68,13 +68,14 @@ public class HubValidator {
 
         checkCallback(callbackUrl, errors);
         checkTopic(topic, errors);
-        checkLeaseSeconds(leaseSeconds, errors);
+        if (!StringUtils.isBlank(leaseSeconds)) {
+            checkLeaseSeconds(leaseSeconds, errors);
+        }
 
         return errors;
     }
 
     /**
-     * 
      * @param mode
      *            - represents the literal <code>String</code> "publish"
      * @param url
@@ -85,7 +86,7 @@ public class HubValidator {
      */
     public List<String> validatePing(String mode, String url) {
         List<String> errors = new ArrayList<String>();
-        if (mode == null || mode.isEmpty()) {
+        if (StringUtils.isBlank(mode)) {
             errors.add("hub.mode must be provided");
         } else {
             try {
@@ -100,7 +101,7 @@ public class HubValidator {
                         + mode + "]");
             }
         }
-        if (url == null || url.isEmpty()) {
+        if (StringUtils.isBlank(url)) {
             errors.add("hub.url must be provided");
         }
         return errors;
@@ -121,20 +122,20 @@ public class HubValidator {
     }
 
     private void checkCallback(String callbackUrl, List<String> errors) {
-        if (callbackUrl == null || callbackUrl.isEmpty()) {
+        if (StringUtils.isBlank(callbackUrl)) {
             errors.add("hub.callback must be provided");
         }
     }
 
     private void checkLeaseSeconds(String leaseSeconds, List<String> errors) {
-        if (leaseSeconds != null && !StringUtils.isNumeric(leaseSeconds)) {
+        if (!StringUtils.isNumeric(leaseSeconds)) {
             errors.add("hub.lease_seconds must be numeric. Provided value is ["
                     + leaseSeconds + "]");
         }
     }
 
     private void checkTopic(String topic, List<String> errors) {
-        if (topic == null || topic.isEmpty()) {
+        if (StringUtils.isBlank(topic)) {
             errors.add("hub.topic must be provided");
         }
     }

@@ -39,214 +39,274 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 /**
- * This class tests the method inside <code>ContentDistributionServiceImpl</code> class
+ * This class tests the method inside
+ * <code>ContentDistributionServiceImpl</code> class
+ *
  * @author Anuranjan
  *
  */
 @RunWith(MockitoJUnitRunner.class)
 public class ContentDistributionServiceImplTest {
 
-	
-	@Mock
-	private HubTopicMDSService hubTopicService;
+    @Mock
+    private HubTopicMDSService hubTopicService;
 
-	@Mock
-	private HubPublisherTransactionMDSService hubPublisherTransactionMDSService;
+    @Mock
+    private HubPublisherTransactionMDSService hubPublisherTransactionMDSService;
 
-	@Mock
-	private HubSubscriptionMDSService hubSubscriptionMDSService;
+    @Mock
+    private HubSubscriptionMDSService hubSubscriptionMDSService;
 
-	@Mock
-	private HubSubscriberTransactionMDSService hubSubscriberTransactionMDSService;
+    @Mock
+    private HubSubscriberTransactionMDSService hubSubscriberTransactionMDSService;
 
-	@Mock
-	private HubDistributionContentMDSService hubDistributionContentMDSService;
-	
-	@Mock
-	private DistributionServiceDelegate distributionServiceDelegate;
+    @Mock
+    private HubDistributionContentMDSService hubDistributionContentMDSService;
 
-	@Mock
-	private ResponseEntity<String> response;
+    @Mock
+    private DistributionServiceDelegate distributionServiceDelegate;
 
-	@Mock
-	private HttpHeaders headers;
-	
-	@InjectMocks
-	private ContentDistributionServiceImpl contentDistributionServiceImpl = new ContentDistributionServiceImpl(hubTopicService,
-			hubSubscriptionMDSService,
-			hubPublisherTransactionMDSService,
-			hubSubscriberTransactionMDSService,
-			hubDistributionContentMDSService);
+    @Mock
+    private ResponseEntity<String> response;
 
-	private String callbackUrl;
-	private String topic;
-	private String url;
-	
-	private HubTopic hubTopic;
-	private HubSubscription subscription;
-	private HubSubscriptionStatus subscriptionStatus;
-	private List<HubSubscription> subscriptionList;
-	private List<HubTopic> hubTopics;
-	
-	@Before
-	public void setup() {
-		
-		callbackUrl = "callback_url";
-		topic = "topic_url";
-		url = "url";
+    @Mock
+    private HttpHeaders headers;
 
-		contentDistributionServiceImpl.setDistributionServiceDelegate(distributionServiceDelegate);
-		
-		hubTopic = new HubTopic();
-		hubTopic.setTopicUrl(topic);
-		
-		subscription = new HubSubscription();
-		subscription.setCallbackUrl(callbackUrl);
-		subscription.setHubSubscriptionStatusId(3);
-		subscription.setHubTopicId(1);
-		subscriptionStatus = new HubSubscriptionStatus();
-		subscriptionStatus.setSubscriptionStatusCode("accepted");
-		
-		subscriptionList = new ArrayList<HubSubscription>();
-		subscriptionList.add(subscription);
-		hubTopics = new ArrayList<HubTopic>();
-		hubTopics.add(hubTopic);
-		
-		when (response.getHeaders()).thenReturn(headers);
-		when (response.getStatusCode()).thenReturn(HttpStatus.OK);
-		when (response.getBody()).thenReturn("content");
-		when (headers.getContentType()).thenReturn(MediaType.APPLICATION_XML);
-		
-	}
-	
-	/**
-	 * Valid scenario: <code>hubTopic</code>and <code>ResponseEntity</code> are both not null. 
-	 * Subscription status = ACCEPTED
-	 */
-	@Test
-	public void testDistributeWitValidResponseEntityAccepted(){
-		when(hubTopicService.findByTopicUrl((String)any())).thenReturn(hubTopics);
-		when(hubTopicService.getDetachedField(hubTopic, "id")).thenReturn((long)1);
-		when(hubDistributionContentMDSService.getDetachedField((HubDistributionContent) any(), anyString())).thenReturn((long)1);
-		when(distributionServiceDelegate.getContent((String)any())).thenReturn(response);
-		when(hubSubscriptionMDSService.findSubByTopicId(1)).thenReturn(subscriptionList);
-		when(hubSubscriptionMDSService
-						.getDetachedField(subscription, "id")).thenReturn((long) 1);
-		
-		contentDistributionServiceImpl.distribute(url);
-		
-		verify(hubTopicService, times(0)).create((HubTopic)any()); 
-		verify(hubPublisherTransactionMDSService, times(1)).create((HubPublisherTransaction)any()); 
-		verify(hubSubscriberTransactionMDSService).create((HubSubscriberTransaction)any());
-		verify(hubDistributionContentMDSService).getDetachedField((HubDistributionContent)any(), (String)any());
-	}
-	
-	/**
-	 * Valid scenario: <code>hubTopic</code>and <code>ResponseEntity</code> are both not null. 
-	 * Distribution response = null
-	 * Subscription status = INTENT_VERIFIED
-	 */
-	@Test
-	public void testDistributeWitValidResponseEntityIntentVerifiedDistributionResponseNull(){
+    @InjectMocks
+    private ContentDistributionServiceImpl contentDistributionServiceImpl = new ContentDistributionServiceImpl(
+            hubTopicService, hubSubscriptionMDSService,
+            hubPublisherTransactionMDSService,
+            hubSubscriberTransactionMDSService,
+            hubDistributionContentMDSService);
 
-		subscriptionStatus.setSubscriptionStatusCode(SubscriptionStatusLookup.INTENT_VERIFIED.toString());
-		when(hubDistributionContentMDSService.getDetachedField((HubDistributionContent) any(), anyString())).thenReturn((long)1);
-		when(hubTopicService.findByTopicUrl((String)any())).thenReturn(hubTopics);
-		when(hubTopicService.getDetachedField(hubTopic, "id")).thenReturn((long)1);
-		when(distributionServiceDelegate.getContent((String)any())).thenReturn(response);
-		when(hubSubscriptionMDSService.findSubByTopicId(1)).thenReturn(subscriptionList);
-		when(hubSubscriptionMDSService
-						.getDetachedField(subscription, "id")).thenReturn((long) 1);
-		
-		contentDistributionServiceImpl.distribute(url);
-		
-		verify(hubTopicService, times(0)).create((HubTopic)any()); 
-		verify(hubPublisherTransactionMDSService, times(1)).create((HubPublisherTransaction)any()); 
-		verify(hubSubscriberTransactionMDSService, times(1)).create((HubSubscriberTransaction)any());  
-		verify(hubDistributionContentMDSService).getDetachedField((HubDistributionContent)any(), (String)any());
-	}
-	
-	/**
-	 * Valid scenario: <code>hubTopic</code>and <code>ResponseEntity</code> are both not null. 
-	 * Distribution response is non-null
-	 * Subscription status = INTENT_VERIFIED
-	 */
-	@Test
-	public void testDistributeWitValidResponseEntityIntentVerifiedDistributionResponseNonNull(){
+    private String callbackUrl;
+    private String topic;
+    private String url;
 
-	ResponseEntity<String> response = new ResponseEntity<String>("response body", HttpStatus.BAD_REQUEST);
-	subscriptionStatus.setSubscriptionStatusCode(SubscriptionStatusLookup.INTENT_VERIFIED.toString());
-	when(hubTopicService.findByTopicUrl((String)any())).thenReturn(hubTopics);
-	when(hubDistributionContentMDSService.getDetachedField((HubDistributionContent)any(), (String)any())).thenReturn((long)1);
-	when(hubTopicService.getDetachedField(hubTopic, "id")).thenReturn((long)1);
-	when(distributionServiceDelegate.getContent((String)any())).thenReturn(response);
-	when(hubSubscriptionMDSService.findSubByTopicId(1)).thenReturn(subscriptionList);
-	when(hubSubscriptionMDSService
-					.getDetachedField(subscription, "id")).thenReturn((long) 1);
-	
-	contentDistributionServiceImpl.distribute(url);
-	
-	verify(hubTopicService, times(0)).create((HubTopic)any()); 
-	verify(hubPublisherTransactionMDSService, times(1)).create((HubPublisherTransaction)any()); 
-	verify(hubSubscriberTransactionMDSService).create((HubSubscriberTransaction)any()); 
-	verify(hubDistributionContentMDSService).getDetachedField((HubDistributionContent)any(), (String)any());
-	}
-	
-	/**
-	 * Invalid scenario: <code>hubTopic</code> and <code>ResponseEntity</code> are null.
-	 */
-	@Test
-	public void testDistributeWithNullHubTopic() {
-		hubTopics = null;
-		response = null;
-		subscriptionList.removeAll(subscriptionList);
-		when(hubTopicService.findByTopicUrl((String)any())).thenReturn(hubTopics);
-		when(hubDistributionContentMDSService.getDetachedField((HubDistributionContent)any(), (String)any())).thenReturn((long)1);
-		when(hubTopicService.getDetachedField((HubTopic)any(), (String)any())).thenReturn((long)1);
-		when(distributionServiceDelegate.getContent((String)any())).thenReturn(response);
-		when(hubSubscriptionMDSService.findSubByTopicId(1)).thenReturn(subscriptionList);
-		when(hubSubscriptionMDSService
-						.getDetachedField(subscription, "id")).thenReturn((long) 1);
-		contentDistributionServiceImpl.distribute(url);
-		
-		verify(hubTopicService, times(1)).create((HubTopic)any()); 
-		verify(hubPublisherTransactionMDSService, times(1)).create((HubPublisherTransaction)any()); 
-		verify(hubSubscriberTransactionMDSService, times(0)).create((HubSubscriberTransaction)any());
-		verify(hubDistributionContentMDSService).getDetachedField((HubDistributionContent)any(), (String)any());
-	}
-	
-	/**
-	 * InvalidScenario: <code>ResponseEntity</code> is null.
-	 */
-	@Test
-	public void testDistributeWithNullResponse(){
-		response = null;
-		when(hubDistributionContentMDSService.getDetachedField((HubDistributionContent)any(), (String)any())).thenReturn((long)1);
-		when(hubTopicService.findByTopicUrl((String)any())).thenReturn(hubTopics);
-		when(hubTopicService.getDetachedField((HubTopic)any(), (String)any())).thenReturn((long)1);
-		when(distributionServiceDelegate.getContent((String)any())).thenReturn(response);
-		when(hubSubscriptionMDSService.findSubByTopicId(1)).thenReturn(subscriptionList);
-		when(hubSubscriptionMDSService
-						.getDetachedField(subscription, "id")).thenReturn((long) 1);
-		contentDistributionServiceImpl.distribute(url);	
-		
-		doAnswer(new Answer<Void>() {
-			@Override
-			public Void answer(InvocationOnMock invocation) throws Throwable {
-				Object[] args = invocation.getArguments();
-				assertNotNull(args);
-				assertEquals(1, args.length);
-				HubPublisherTransaction hubPublisherTransaction = (HubPublisherTransaction) args[0];
-				assertNotNull(hubPublisherTransaction);
-				assertEquals((Integer)1, hubPublisherTransaction.getHubTopicId());
-				return null;
-			}
-		}).when(hubPublisherTransactionMDSService).create((HubPublisherTransaction) any());
-		
-		verify(hubTopicService, times(0)).create((HubTopic)any()); 
-		verify(hubPublisherTransactionMDSService, times(1)).create((HubPublisherTransaction)any()); 
-		verify(hubSubscriberTransactionMDSService).create((HubSubscriberTransaction)any());
-		verify(hubDistributionContentMDSService).getDetachedField((HubDistributionContent)any(), (String)any());
-	}
-	
+    private HubTopic hubTopic;
+    private HubSubscription subscription;
+    private HubSubscriptionStatus subscriptionStatus;
+    private List<HubSubscription> subscriptionList;
+    private List<HubTopic> hubTopics;
+
+    @Before
+    public void setup() {
+
+        callbackUrl = "callback_url";
+        topic = "topic_url";
+        url = "url";
+
+        contentDistributionServiceImpl
+                .setDistributionServiceDelegate(distributionServiceDelegate);
+
+        hubTopic = new HubTopic();
+        hubTopic.setTopicUrl(topic);
+
+        subscription = new HubSubscription();
+        subscription.setCallbackUrl(callbackUrl);
+        subscription.setHubSubscriptionStatusId(3);
+        subscription.setHubTopicId(1);
+        subscriptionStatus = new HubSubscriptionStatus();
+        subscriptionStatus.setSubscriptionStatusCode("accepted");
+
+        subscriptionList = new ArrayList<HubSubscription>();
+        subscriptionList.add(subscription);
+        hubTopics = new ArrayList<HubTopic>();
+        hubTopics.add(hubTopic);
+
+        when(response.getHeaders()).thenReturn(headers);
+        when(response.getStatusCode()).thenReturn(HttpStatus.OK);
+        when(response.getBody()).thenReturn("content");
+        when(headers.getContentType()).thenReturn(MediaType.APPLICATION_XML);
+
+    }
+
+    /**
+     * Valid scenario: <code>hubTopic</code>and <code>ResponseEntity</code> are
+     * both not null. Subscription status = ACCEPTED
+     */
+    @Test
+    public void testDistributeWitValidResponseEntityAccepted() {
+        when(hubTopicService.findByTopicUrl((String) any())).thenReturn(
+                hubTopics);
+        when(hubTopicService.getDetachedField(hubTopic, "id")).thenReturn(
+                (long) 1);
+        when(
+                hubDistributionContentMDSService.getDetachedField(
+                        (HubDistributionContent) any(), anyString()))
+                .thenReturn((long) 1);
+        when(distributionServiceDelegate.getContent((String) any()))
+                .thenReturn(response);
+        when(hubSubscriptionMDSService.findSubByTopicId(1)).thenReturn(
+                subscriptionList);
+        when(hubSubscriptionMDSService.getDetachedField(subscription, "id"))
+                .thenReturn((long) 1);
+
+        contentDistributionServiceImpl.distribute(url);
+
+        verify(hubTopicService, times(0)).create((HubTopic) any());
+        verify(hubPublisherTransactionMDSService, times(1)).create(
+                (HubPublisherTransaction) any());
+        verify(hubSubscriberTransactionMDSService).create(
+                (HubSubscriberTransaction) any());
+        verify(hubDistributionContentMDSService).getDetachedField(
+                (HubDistributionContent) any(), (String) any());
+    }
+
+    /**
+     * Valid scenario: <code>hubTopic</code>and <code>ResponseEntity</code> are
+     * both not null. Distribution response = null Subscription status =
+     * INTENT_VERIFIED
+     */
+    @Test
+    public void testDistributeWitValidResponseEntityIntentVerifiedDistributionResponseNull() {
+
+        subscriptionStatus
+                .setSubscriptionStatusCode(SubscriptionStatusLookup.INTENT_VERIFIED
+                        .toString());
+        when(
+                hubDistributionContentMDSService.getDetachedField(
+                        (HubDistributionContent) any(), anyString()))
+                .thenReturn((long) 1);
+        when(hubTopicService.findByTopicUrl((String) any())).thenReturn(
+                hubTopics);
+        when(hubTopicService.getDetachedField(hubTopic, "id")).thenReturn(
+                (long) 1);
+        when(distributionServiceDelegate.getContent((String) any()))
+                .thenReturn(response);
+        when(hubSubscriptionMDSService.findSubByTopicId(1)).thenReturn(
+                subscriptionList);
+        when(hubSubscriptionMDSService.getDetachedField(subscription, "id"))
+                .thenReturn((long) 1);
+
+        contentDistributionServiceImpl.distribute(url);
+
+        verify(hubTopicService, times(0)).create((HubTopic) any());
+        verify(hubPublisherTransactionMDSService, times(1)).create(
+                (HubPublisherTransaction) any());
+        verify(hubSubscriberTransactionMDSService, times(1)).create(
+                (HubSubscriberTransaction) any());
+        verify(hubDistributionContentMDSService).getDetachedField(
+                (HubDistributionContent) any(), (String) any());
+    }
+
+    /**
+     * Valid scenario: <code>hubTopic</code>and <code>ResponseEntity</code> are
+     * both not null. Distribution response is non-null Subscription status =
+     * INTENT_VERIFIED
+     */
+    @Test
+    public void testDistributeWitValidResponseEntityIntentVerifiedDistributionResponseNonNull() {
+
+        ResponseEntity<String> response = new ResponseEntity<String>(
+                "response body", HttpStatus.BAD_REQUEST);
+        subscriptionStatus
+                .setSubscriptionStatusCode(SubscriptionStatusLookup.INTENT_VERIFIED
+                        .toString());
+        when(hubTopicService.findByTopicUrl((String) any())).thenReturn(
+                hubTopics);
+        when(
+                hubDistributionContentMDSService.getDetachedField(
+                        (HubDistributionContent) any(), (String) any()))
+                .thenReturn((long) 1);
+        when(hubTopicService.getDetachedField(hubTopic, "id")).thenReturn(
+                (long) 1);
+        when(distributionServiceDelegate.getContent((String) any()))
+                .thenReturn(response);
+        when(hubSubscriptionMDSService.findSubByTopicId(1)).thenReturn(
+                subscriptionList);
+        when(hubSubscriptionMDSService.getDetachedField(subscription, "id"))
+                .thenReturn((long) 1);
+
+        contentDistributionServiceImpl.distribute(url);
+
+        verify(hubTopicService, times(0)).create((HubTopic) any());
+        verify(hubPublisherTransactionMDSService, times(1)).create(
+                (HubPublisherTransaction) any());
+        verify(hubSubscriberTransactionMDSService).create(
+                (HubSubscriberTransaction) any());
+        verify(hubDistributionContentMDSService).getDetachedField(
+                (HubDistributionContent) any(), (String) any());
+    }
+
+    /**
+     * Invalid scenario: <code>hubTopic</code> and <code>ResponseEntity</code>
+     * are null.
+     */
+    @Test
+    public void testDistributeWithNullHubTopic() {
+        hubTopics = null;
+        response = null;
+        subscriptionList.removeAll(subscriptionList);
+        when(hubTopicService.findByTopicUrl((String) any())).thenReturn(
+                hubTopics);
+        when(
+                hubDistributionContentMDSService.getDetachedField(
+                        (HubDistributionContent) any(), (String) any()))
+                .thenReturn((long) 1);
+        when(hubTopicService.getDetachedField((HubTopic) any(), (String) any()))
+                .thenReturn((long) 1);
+        when(distributionServiceDelegate.getContent((String) any()))
+                .thenReturn(response);
+        when(hubSubscriptionMDSService.findSubByTopicId(1)).thenReturn(
+                subscriptionList);
+        when(hubSubscriptionMDSService.getDetachedField(subscription, "id"))
+                .thenReturn((long) 1);
+        contentDistributionServiceImpl.distribute(url);
+
+        verify(hubTopicService, times(1)).create((HubTopic) any());
+        verify(hubPublisherTransactionMDSService, times(1)).create(
+                (HubPublisherTransaction) any());
+        verify(hubSubscriberTransactionMDSService, times(0)).create(
+                (HubSubscriberTransaction) any());
+        verify(hubDistributionContentMDSService).getDetachedField(
+                (HubDistributionContent) any(), (String) any());
+    }
+
+    /**
+     * InvalidScenario: <code>ResponseEntity</code> is null.
+     */
+    @Test
+    public void testDistributeWithNullResponse() {
+        response = null;
+        when(
+                hubDistributionContentMDSService.getDetachedField(
+                        (HubDistributionContent) any(), (String) any()))
+                .thenReturn((long) 1);
+        when(hubTopicService.findByTopicUrl((String) any())).thenReturn(
+                hubTopics);
+        when(hubTopicService.getDetachedField((HubTopic) any(), (String) any()))
+                .thenReturn((long) 1);
+        when(distributionServiceDelegate.getContent((String) any()))
+                .thenReturn(response);
+        when(hubSubscriptionMDSService.findSubByTopicId(1)).thenReturn(
+                subscriptionList);
+        when(hubSubscriptionMDSService.getDetachedField(subscription, "id"))
+                .thenReturn((long) 1);
+        contentDistributionServiceImpl.distribute(url);
+
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                assertNotNull(args);
+                assertEquals(1, args.length);
+                HubPublisherTransaction hubPublisherTransaction = (HubPublisherTransaction) args[0];
+                assertNotNull(hubPublisherTransaction);
+                assertEquals((Integer) 1,
+                        hubPublisherTransaction.getHubTopicId());
+                return null;
+            }
+        }).when(hubPublisherTransactionMDSService).create(
+                (HubPublisherTransaction) any());
+
+        verify(hubTopicService, times(0)).create((HubTopic) any());
+        verify(hubPublisherTransactionMDSService, times(1)).create(
+                (HubPublisherTransaction) any());
+        verify(hubSubscriberTransactionMDSService).create(
+                (HubSubscriberTransaction) any());
+        verify(hubDistributionContentMDSService).getDetachedField(
+                (HubDistributionContent) any(), (String) any());
+    }
 }
+

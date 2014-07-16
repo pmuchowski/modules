@@ -23,28 +23,28 @@ public class HubTopicMDSServiceIT extends BasePaxIT {
 
     @Inject
     private HubTopicMDSService hubTopicMDSService;
-    
+
     private String topicUrl = "http://topic/url";
-    
+
     @Test
     public void testHubTopic() {
-    	List<HubTopic> hubTopics = hubTopicMDSService.findByTopicUrl(topicUrl);
-    	Assert.assertNotNull(hubTopics);
-    	Assert.assertEquals(0, hubTopics.size());
-    	
-    	HubTopic hubTopic = new HubTopic();
-    	hubTopic.setTopicUrl(topicUrl);
-    	hubTopicMDSService.create(hubTopic);
-    	
-    	hubTopics = hubTopicMDSService.findByTopicUrl(topicUrl);
-    	Assert.assertNotNull(hubTopics);
-    	Assert.assertEquals(1, hubTopics.size());
+        List<HubTopic> hubTopics = hubTopicMDSService.findByTopicUrl(topicUrl);
+        Assert.assertNotNull(hubTopics);
+        Assert.assertEquals(0, hubTopics.size());
+
+        HubTopic hubTopic = new HubTopic();
+        hubTopic.setTopicUrl(topicUrl);
+        hubTopicMDSService.create(hubTopic);
+
+        hubTopics = hubTopicMDSService.findByTopicUrl(topicUrl);
+        Assert.assertNotNull(hubTopics);
+        Assert.assertEquals(1, hubTopics.size());
         Assert.assertEquals(topicUrl, hubTopics.get(0).getTopicUrl());
-    	
-    	hubTopicMDSService.delete(hubTopics.get(0));
+
+        hubTopicMDSService.delete(hubTopics.get(0));
         hubTopics = hubTopicMDSService.findByTopicUrl(topicUrl);
         Assert.assertNotNull(hubTopics);
         Assert.assertEquals(0, hubTopics.size());
-    	
+
     }
 }

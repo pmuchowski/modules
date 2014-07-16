@@ -9,14 +9,11 @@ import org.motechproject.hub.util.HubUtils;
 @XmlRootElement(name = "Error")
 public class HubError {
 
-    // transactionId
     private String errorCode;
     private String errorMessage;
     private String application;
     private Date timeStamp;
     private String hostName;
-
-    // HubErrorDetail
 
     public HubError() {
         timeStamp = HubUtils.getCurrentDateTime();

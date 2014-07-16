@@ -2,7 +2,8 @@ package org.motechproject.hub.model;
 
 public enum DistributionStatusLookup {
 
-    SUCCESS(1, "success"), FAILURE(2, "failure");
+    SUCCESS(1, "success"),
+    FAILURE(2, "failure");
 
     private final String status;
     private final int id;

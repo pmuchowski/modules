@@ -27,43 +27,48 @@ public class HubPublisherTransactionMDSServiceIT extends BasePaxIT {
     private HubPublisherTransactionMDSService hubPublisherTransactionMDSService;
     @Inject
     private HubTopicMDSService hubTopicMDSService;
-    
+
     private String topicUrl = "http://topic/url";
-    
+
     @Test
     public void testHubPublisherTransaction() {
         HubTopic hubTopic = new HubTopic();
         hubTopic.setTopicUrl(topicUrl);
         hubTopicMDSService.create(hubTopic);
-        
+
         List<HubTopic> hubTopics = hubTopicMDSService.findByTopicUrl(topicUrl);
         Assert.assertNotNull(hubTopics);
         Assert.assertEquals(1, hubTopics.size());
-        
-        int topicId = (int) (long) hubTopicMDSService.getDetachedField(hubTopic, "id");
-        
-        List<HubPublisherTransaction> hubPublisherTransactions = hubPublisherTransactionMDSService.findPubTransactionByTopicId(topicId);
+
+        int topicId = (int) (long) hubTopicMDSService.getDetachedField(
+                hubTopic, "id");
+
+        List<HubPublisherTransaction> hubPublisherTransactions = hubPublisherTransactionMDSService
+                .findPubTransactionByTopicId(topicId);
         Assert.assertNotNull(hubPublisherTransactions);
         Assert.assertEquals(0, hubPublisherTransactions.size());
-        
+
         HubPublisherTransaction hubPublisherTransaction = new HubPublisherTransaction();
         hubPublisherTransaction.setHubTopicId(topicId);
         hubPublisherTransactionMDSService.create(hubPublisherTransaction);
-        
-        hubPublisherTransactions = hubPublisherTransactionMDSService.findPubTransactionByTopicId(topicId);
+
+        hubPublisherTransactions = hubPublisherTransactionMDSService
+                .findPubTransactionByTopicId(topicId);
         Assert.assertNotNull(hubPublisherTransactions);
         Assert.assertEquals(1, hubPublisherTransactions.size());
-        Assert.assertEquals(topicId, (int) hubPublisherTransactions.get(0).getHubTopicId());
-        
+        Assert.assertEquals(topicId, (int) hubPublisherTransactions.get(0)
+                .getHubTopicId());
+
         hubPublisherTransactionMDSService.delete(hubPublisherTransaction);
-        hubPublisherTransactions = hubPublisherTransactionMDSService.findPubTransactionByTopicId(topicId);
+        hubPublisherTransactions = hubPublisherTransactionMDSService
+                .findPubTransactionByTopicId(topicId);
         Assert.assertNotNull(hubPublisherTransactions);
         Assert.assertEquals(0, hubPublisherTransactions.size());
-        
+
         hubTopicMDSService.delete(hubTopic);
         hubTopics = hubTopicMDSService.findByTopicUrl(topicUrl);
         Assert.assertNotNull(hubTopics);
         Assert.assertEquals(0, hubTopics.size());
-        
+
     }
 }

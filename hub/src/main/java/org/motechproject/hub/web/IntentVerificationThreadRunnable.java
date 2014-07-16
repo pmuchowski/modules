@@ -3,13 +3,14 @@ package org.motechproject.hub.web;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
 import org.motechproject.http.agent.service.HttpAgent;
 import org.motechproject.http.agent.service.Method;
 import org.motechproject.hub.mds.HubSubscription;
 import org.motechproject.hub.mds.service.HubSubscriptionMDSService;
 import org.motechproject.hub.model.SubscriptionStatusLookup;
 import org.motechproject.hub.util.HubConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,11 +22,14 @@ import org.springframework.transaction.annotation.Transactional;
  * This class implements <code>Runnable</code> which starts a new thread to
  * verify the intent of the subscriber requesting subscription or
  * unsubscription.
- * 
+ *
  * @author Anuranjan
- * 
+ *
  */
 public class IntentVerificationThreadRunnable implements Runnable {
+
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(IntentVerificationThreadRunnable.class);
 
     private static final String INTENT_VERIFICATION_PARAMS = "?hub.mode={mode}&hub.topic={topic}&hub.challenge={challenge}";
 
@@ -59,9 +63,6 @@ public class IntentVerificationThreadRunnable implements Runnable {
     public void setRetryInterval(Long retryInterval) {
         this.retryInterval = retryInterval;
     }
-
-    private static final Logger LOGGER = Logger
-            .getLogger(IntentVerificationThreadRunnable.class);
 
     public String getCallbackUrl() {
         return callbackUrl;
@@ -112,13 +113,13 @@ public class IntentVerificationThreadRunnable implements Runnable {
      * that the subscriber did indeed send the subscription request. The hub
      * verifies a subscription request by sending an HTTP GET request to the
      * subscriber's callback URL as given in the subscription request.
-     * 
+     *
      * For this, hub generates a random string token and sends as param
      * <code>hub.challenge</code> which the subscriber must echo in order to
      * confirm its request. Other parameters are <code>hub.mode</code> and
      * <code>hub.topic</code> coming from the subscription/unsubscription
      * request
-     * 
+     *
      */
     @Override
     @Transactional

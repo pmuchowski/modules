@@ -11,11 +11,8 @@
     <name>MOTECH Modules</name>
 
     <description>
-MOTECH is a software system from Grameen Foundation that harnesses the
-ubiquity
-of mobile phones to deliver and receive information from patient and
-caregivers.
-</description>
+        MOTECH is a software system from Grameen Foundation that harnesses the ubiquity of mobile phones to deliver and receive information from patient and caregivers.
+    </description>
 
     <properties>
         <motech.groupId>org.motechproject</motech.groupId>
@@ -586,6 +583,11 @@ caregivers.
                         <artifactId>com.springsource.org.apache.commons.codec</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>com.springsource.org.apache.httpcomponents.httpclient</artifactId>
+                <version>4.1.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>

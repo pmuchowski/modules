@@ -14,9 +14,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 /**
  * This is a test class which test the validator methods in
  * <code>HubValidator</code> class for publish/subscribe APIs
- * 
+ *
  * @author Anuranjan
- * 
  */
 @RunWith(MockitoJUnitRunner.class)
 public class HubValidatorTest {

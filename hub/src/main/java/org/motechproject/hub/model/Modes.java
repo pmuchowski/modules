@@ -2,7 +2,9 @@ package org.motechproject.hub.model;
 
 public enum Modes {
 
-    SUBSCRIBE("subscribe"), UNSUBSCRIBE("unsubscribe"), PUBLISH("publish");
+    SUBSCRIBE("subscribe"),
+    UNSUBSCRIBE("unsubscribe"),
+    PUBLISH("publish");
 
     private final String mode;
 

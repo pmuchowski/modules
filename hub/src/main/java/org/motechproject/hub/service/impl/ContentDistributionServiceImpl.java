@@ -2,7 +2,6 @@ package org.motechproject.hub.service.impl;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.motechproject.hub.mds.HubDistributionContent;
 import org.motechproject.hub.mds.HubPublisherTransaction;
@@ -20,6 +19,8 @@ import org.motechproject.hub.service.ContentDistributionService;
 import org.motechproject.hub.service.DistributionServiceDelegate;
 import org.motechproject.hub.util.HubConstants;
 import org.motechproject.hub.util.HubUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ import org.springframework.stereotype.Service;
 public class ContentDistributionServiceImpl implements
         ContentDistributionService {
 
-    private static final Logger LOGGER = Logger
+    private static final Logger LOGGER = LoggerFactory
             .getLogger(ContentDistributionService.class);
 
     private HubTopicMDSService hubTopicMDSService;
@@ -77,16 +78,16 @@ public class ContentDistributionServiceImpl implements
         List<HubTopic> hubTopics = hubTopicMDSService.findByTopicUrl(url);
         long topicId = -1;
         if (hubTopics == null || hubTopics.isEmpty()) {
-            LOGGER.info(String.format(
-                    "No Hub topics for the url '%s'. Creating the hub topic.",
-                    url));
+            LOGGER.info(
+                    "No Hub topics for the url '{}'. Creating the hub topic.",
+                    url);
             HubTopic hubTopic = new HubTopic();
             hubTopic.setTopicUrl(url);
             hubTopic = hubTopicMDSService.create(hubTopic);
             topicId = (long) hubTopicMDSService
                     .getDetachedField(hubTopic, "id");
         } else if (hubTopics.size() > 1) {
-            LOGGER.error("Multiple hub topics for the url " + url);
+            LOGGER.error("Multiple hub topics for the url {} ", url);
         } else {
             topicId = (long) hubTopicMDSService.getDetachedField(
                     hubTopics.get(0), "id");
@@ -103,7 +104,7 @@ public class ContentDistributionServiceImpl implements
                 && response.getStatusCode().value() / HubConstants.HUNDRED == 2) {
             content = response.getBody();
             contentType = response.getHeaders().getContentType();
-            LOGGER.debug("Content received from Publisher: " + content);
+            LOGGER.debug("Content received from Publisher: {}", content);
         }
 
         HubDistributionContent hubDistributionContent = new HubDistributionContent();

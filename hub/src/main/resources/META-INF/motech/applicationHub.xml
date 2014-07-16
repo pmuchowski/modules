@@ -13,9 +13,7 @@
     <context:component-scan base-package="org.motechproject.hub.service.impl" />
     <context:component-scan base-package="org.motechproject.hub.web" />
     <context:component-scan base-package="org.motechproject.hub.validation" />
-
     <mvc:annotation-driven />
-
 
     <!-- ========================= GENERAL DEFINITIONS ========================= -->
     <context:property-placeholder

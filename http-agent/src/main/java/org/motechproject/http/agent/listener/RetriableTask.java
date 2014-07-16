@@ -5,6 +5,13 @@ import java.util.concurrent.CancellationException;
 
 import org.apache.http.HttpException;
 
+/**
+ * This class implements callable to retry failed executions of external calls
+ * through rest template
+ *
+ * @author anuranjan
+ *
+ */
 public class RetriableTask<T> implements Callable<T> {
 
     private Callable<T> task;
@@ -26,11 +33,12 @@ public class RetriableTask<T> implements Callable<T> {
         this.task = task;
     }
 
+    @Override
     public T call() throws HttpException, InterruptedException {
         T t = null;
         while (numberOfTriesLeft > 0) {
             try {
-                t = (T) task.call();
+                t = task.call();
             } catch (InterruptedException e) {
                 throw e;
             } catch (CancellationException e) {

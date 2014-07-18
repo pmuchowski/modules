@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -11,7 +10,8 @@
     <name>MOTECH Modules</name>
 
     <description>
-        MOTECH is a software system from Grameen Foundation that harnesses the ubiquity of mobile phones to deliver and receive information from patient and caregivers.
+        MOTECH is a software system from Grameen Foundation that harnesses the ubiquity
+        of mobile phones to deliver and receive information from patient and caregivers.
     </description>
 
     <properties>
@@ -1103,6 +1103,7 @@
         <module>mtraining</module>
         <module>sms</module>
         <module>message-campaign</module>
+        <module>openmrs-19</module>
         <module>pill-reminder</module>
         <module>schedule-tracking</module>
         <module>hub</module>
@@ -1292,7 +1293,7 @@
                         </goals>
                         <configuration>
                             <rules>
-                                <DependencyConvergence />
+                                <DependencyConvergence/>
                             </rules>
                         </configuration>
                     </execution>
@@ -1304,7 +1305,7 @@
                         <phase>verify</phase>
                         <configuration>
                             <rules>
-                                <NoPackageCyclesRule implementation="PackageCycles" />
+                                <NoPackageCyclesRule implementation="PackageCycles"/>
                             </rules>
                             <skip>${enforcer.skip}</skip>
                         </configuration>
@@ -1435,8 +1436,10 @@
                             <password>${mysql.password}</password>
                             <url>jdbc:mysql://localhost:3306</url>
                         </configuration>
-                        <!-- For each Bundle IT tests in modules migrated to MDS the 'motech_data_services' 
-                            database has to be dropped and created again. -->
+                        <!--
+                            For each Bundle IT tests in modules migrated to MDS the
+                            'motech_data_services' database has to be dropped and created again.
+                        -->
                         <executions>
                             <execution>
                                 <id>drop-db</id>

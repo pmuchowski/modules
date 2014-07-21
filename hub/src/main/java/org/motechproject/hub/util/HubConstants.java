@@ -16,9 +16,8 @@ public final class HubConstants {
     public static final String HUB_URL_PARAM = "hub.url";
     public static final String HUB_SECRET_PARAM = "hub.secret";
     public static final String HUB_CHALLENGE_PARAM = "hub.challenge";
-    
+    public static final String APP_NAME = "hub";
+
     public static final String HEADER_LINK = "Link";
     public static final String HEADER_CONTENT_TYPE = "Content-Type";
-
-    public static final String APP_NAME = "hub";
 }

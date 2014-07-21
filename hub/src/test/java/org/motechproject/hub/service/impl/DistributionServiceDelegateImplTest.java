@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.anyMap;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -18,6 +19,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.motechproject.http.agent.service.HttpAgent;
 import org.motechproject.http.agent.service.Method;
 import org.motechproject.server.config.SettingsFacade;
+import org.omg.CORBA.AnyHolder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -108,6 +110,6 @@ public class DistributionServiceDelegateImplTest {
                 contentType, topicUrl);
 
         verify(httpAgent, Mockito.times(1)).execute(anyString(),
-                (HttpEntity<String>) anyObject(), (Method) any());
+                anyString(), (Method) any(), anyMap());
     }
 }

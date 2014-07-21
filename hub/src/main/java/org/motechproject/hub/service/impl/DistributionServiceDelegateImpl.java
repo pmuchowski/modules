@@ -1,8 +1,12 @@
 package org.motechproject.hub.service.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.motechproject.http.agent.service.HttpAgent;
 import org.motechproject.http.agent.service.Method;
 import org.motechproject.hub.service.DistributionServiceDelegate;
+import org.motechproject.hub.util.HubConstants;
 import org.motechproject.server.config.SettingsFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,9 +20,9 @@ import org.springframework.stereotype.Service;
 /**
  * This class implements the methods in the interface
  * <code>DistributionServiceDelegate</code>
- *
+ * 
  * @author Anuranjan
- *
+ * 
  */
 @Service(value = "distributionServiceDelegate")
 public class DistributionServiceDelegateImpl implements
@@ -75,12 +79,10 @@ public class DistributionServiceDelegateImpl implements
 
         String hubBaseUrl = settingsFacade.getProperty("hubBaseUrl");
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(contentType);
-        headers.add("Link", "<" + hubBaseUrl + ">; rel=\"hub\", <" + topicUrl
-                + ">; rel=\"self\"");
-        HttpEntity<String> entity = new HttpEntity<String>(content, headers);
-
-        httpAgentImpl.execute(callbackUrl, entity, Method.POST);
+        Map<String, String> headersMap = new HashMap<String, String>();
+        headersMap.put(HubConstants.HEADER_CONTENT_TYPE, contentType.toString());
+        headersMap.put(HubConstants.HEADER_LINK, "<" + hubBaseUrl + ">; rel=\"hub\", <"
+                + topicUrl + ">; rel=\"self\"");
+        httpAgentImpl.execute(callbackUrl, content, Method.POST, headersMap);
     }
 }

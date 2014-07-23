@@ -20,8 +20,7 @@
         location="classpath:*hibernate.properties,classpath:*application.properties,classpath:*postgres.properties" />
 
 
-    <bean id="hubValidator" class="org.motechproject.hub.validation.HubValidator">
-    </bean>
+    <bean id="hubValidator" class="org.motechproject.hub.validation.HubValidator" />
 
     <bean id="httpComponentsClientHttpRequestFactory"
         class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory" />

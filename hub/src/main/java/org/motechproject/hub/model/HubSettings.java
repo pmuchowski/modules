@@ -20,10 +20,6 @@ public class HubSettings {
     }
 
     public boolean canMakeConnection() {
-        boolean canMakeConnection = true;
-        if (StringUtils.isBlank(hubBaseUrl)) {
-            canMakeConnection = false;
-        }
-        return canMakeConnection;
+        return StringUtils.isNotBlank(hubBaseUrl);
     }
 }

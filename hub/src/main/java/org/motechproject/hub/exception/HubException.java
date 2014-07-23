@@ -43,7 +43,7 @@ public class HubException extends Exception {
     }
 
     public String getErrorMessage() {
-        if (StringUtils.length(reason) < 1) {
+        if (StringUtils.isEmpty(reason)) {
             return this.getMessage();
         } else {
             return this.getMessage() + ". Reason: " + reason;

@@ -81,14 +81,17 @@ public class HttpClientEventListener {
         Map<String, Object> parameters = motechEvent.getParameters();
         final String url = String.valueOf(parameters.get(EventDataKeys.URL));
         final Object requestData = parameters.get(EventDataKeys.DATA);
-        final Method method = (Method) parameters.get(EventDataKeys.METHOD);
+        Object methodObj = parameters.get(EventDataKeys.METHOD);
+        final Method method = (methodObj instanceof Method) ? (Method) parameters
+                .get(EventDataKeys.METHOD) : Method
+                .fromString((String) methodObj);
         int retryCount = 1; // default retry count = 1
         long retryInterval = 0; // by default, no waiting time between two
                                 // retries
-        if (EventDataKeys.RETRY_COUNT != null) {
+        if (parameters.get(EventDataKeys.RETRY_COUNT) != null) {
             retryCount = (int) parameters.get(EventDataKeys.RETRY_COUNT);
         }
-        if (EventDataKeys.RETRY_INTERVAL != null) {
+        if (parameters.get(EventDataKeys.RETRY_INTERVAL) != null) {
             retryInterval = (long) parameters.get(EventDataKeys.RETRY_INTERVAL);
         }
         ResponseEntity<?> retValue = null;
@@ -97,19 +100,15 @@ public class HttpClientEventListener {
         Callable<ResponseEntity<?>> task = new Callable<ResponseEntity<?>>() {
             public ResponseEntity<?> call() throws HttpException {
 
-                try {
-                    logger.info(String.format(
-                            "Posting Http request -- Url: %s, Data: %s", url,
-                            String.valueOf(requestData)));
-                    ResponseEntity<?> response = executeForReturnType(url,
-                            requestData, method);
-                    if (response.getStatusCode().value() / HUNDRED == 2) {
-                        return response;
-                    } else {
-                        throw new HttpException();
-                    }
-                } catch (HttpException e) {
-                    throw e;
+                logger.info(String.format(
+                        "Posting Http request -- Url: %s, Data: %s", url,
+                        String.valueOf(requestData)));
+                ResponseEntity<?> response = executeForReturnType(url,
+                        requestData, method);
+                if (response.getStatusCode().value() / HUNDRED == 2) {
+                    return response;
+                } else {
+                    throw new HttpException();
                 }
             }
         };

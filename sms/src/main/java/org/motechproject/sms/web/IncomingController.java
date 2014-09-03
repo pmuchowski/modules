@@ -1,6 +1,7 @@
 package org.motechproject.sms.web;
 
 import org.joda.time.DateTime;
+import org.motechproject.admin.service.StatusMessageService;
 import org.motechproject.event.listener.EventRelay;
 import org.motechproject.server.config.SettingsFacade;
 import org.motechproject.sms.alert.MotechStatusMessage;
@@ -39,7 +40,8 @@ import static org.motechproject.sms.audit.SmsDirection.INBOUND;
 public class IncomingController {
 
     @Autowired
-    private MotechStatusMessage motechStatusMessage;
+    private StatusMessageService statusMessageService;
+
     private Logger logger = LoggerFactory.getLogger(IncomingController.class);
     private ConfigReader configReader;
     private Configs configs;

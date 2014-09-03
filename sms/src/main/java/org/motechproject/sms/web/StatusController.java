@@ -1,16 +1,12 @@
 package org.motechproject.sms.web;
 
+import org.motechproject.admin.service.StatusMessageService;
 import org.motechproject.event.listener.EventRelay;
 import org.motechproject.mds.query.QueryParams;
 import org.motechproject.mds.util.Order;
 import org.motechproject.server.config.SettingsFacade;
 import org.motechproject.sms.SmsEventSubjects;
-import org.motechproject.sms.alert.MotechStatusMessage;
-import org.motechproject.sms.audit.DeliveryStatus;
-import org.motechproject.sms.audit.SmsAuditService;
-import org.motechproject.sms.audit.SmsRecord;
-import org.motechproject.sms.audit.SmsRecordSearchCriteria;
-import org.motechproject.sms.audit.SmsRecords;
+import org.motechproject.sms.audit.*;
 import org.motechproject.sms.configs.Config;
 import org.motechproject.sms.configs.ConfigReader;
 import org.motechproject.sms.configs.Configs;
@@ -25,11 +21,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -48,15 +40,19 @@ import static org.motechproject.sms.audit.SmsDirection.OUTBOUND;
 public class StatusController {
 
     @Autowired
-    private MotechStatusMessage motechStatusMessage;
     private Logger logger = LoggerFactory.getLogger(StatusController.class);
+    @Autowired
+    private StatusMessageService statusMessageService;
+
     private ConfigReader configReader;
     private Configs configs;
     private Templates templates;
     private EventRelay eventRelay;
     private SmsAuditService smsAuditService;
+
     private static final int RECORD_FIND_RETRY_COUNT = 3;
     private static final int RECORD_FIND_TIMEOUT = 500;
+    private static final String SMS_MODULE = "motech-sms";
 
     @Autowired
     public StatusController(@Qualifier("smsSettings") SettingsFacade settingsFacade, EventRelay eventRelay,
@@ -128,7 +124,7 @@ public class StatusController {
             String msg = String.format("Received status update but couldn't find a log record with matching " +
                     "ProviderMessageId or motechId: %s", providerMessageId);
             logger.error(msg);
-            motechStatusMessage.alert(msg);
+            statusMessageService.warn(msg, SMS_MODULE);
         }
 
         if (existingSmsRecord != null) {
@@ -170,7 +166,7 @@ public class StatusController {
             String msg = String.format("Likely template error, unable to extract status string. Config: %s, Parameters: %s",
                     configName, params);
             logger.error(msg);
-            motechStatusMessage.alert(msg);
+            statusMessageService.warn(msg, SMS_MODULE);
             smsRecord.setDeliveryStatus(DeliveryStatus.FAILURE_CONFIRMED);
             eventRelay.sendEventMessage(outboundEvent(SmsEventSubjects.FAILURE_CONFIRMED, configName, recipients,
                     smsRecord.getMessageContent(), smsRecord.getMotechId(), providerMessageId, null, null,
@@ -195,7 +191,7 @@ public class StatusController {
             String msg = String.format("Received SMS Status for '%s' config but no matching config: %s", configName,
                     params);
             logger.error(msg);
-            motechStatusMessage.alert(msg);
+            statusMessageService.warn(msg, SMS_MODULE);
             config = configs.getDefaultConfig();
         }
         Template template = templates.getTemplate(config.getTemplateName());
@@ -208,13 +204,13 @@ public class StatusController {
                 String msg = String.format("We have a message id, but don't know how to extract message status, this is most likely a template error. Config: %s, Parameters: %s",
                         configName, params);
                 logger.error(msg);
-                motechStatusMessage.alert(msg);
+                statusMessageService.warn(msg, SMS_MODULE);
             }
         } else {
             String msg = String.format("Status message received from provider, but no template support! Config: %s, Parameters: %s",
                     configName, params);
             logger.error(msg);
-            motechStatusMessage.alert(msg);
+            statusMessageService.warn(msg, SMS_MODULE);
         }
     }
 }

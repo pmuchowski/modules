@@ -6,7 +6,11 @@ import org.motechproject.mds.query.QueryParams;
 import org.motechproject.mds.util.Order;
 import org.motechproject.server.config.SettingsFacade;
 import org.motechproject.sms.SmsEventSubjects;
-import org.motechproject.sms.audit.*;
+import org.motechproject.sms.audit.DeliveryStatus;
+import org.motechproject.sms.audit.SmsAuditService;
+import org.motechproject.sms.audit.SmsRecord;
+import org.motechproject.sms.audit.SmsRecordSearchCriteria;
+import org.motechproject.sms.audit.SmsRecords;
 import org.motechproject.sms.configs.Config;
 import org.motechproject.sms.configs.ConfigReader;
 import org.motechproject.sms.configs.Configs;
@@ -21,7 +25,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,8 +47,8 @@ import static org.motechproject.sms.audit.SmsDirection.OUTBOUND;
 @RequestMapping(value = "/status")
 public class StatusController {
 
-    @Autowired
     private Logger logger = LoggerFactory.getLogger(StatusController.class);
+
     @Autowired
     private StatusMessageService statusMessageService;
 

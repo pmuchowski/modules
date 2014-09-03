@@ -7,6 +7,6 @@ import org.junit.runners.Suite;
  * Specify which integration test classes to run
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({SmsAuditServiceIT.class, SmsServiceIT.class})
+@Suite.SuiteClasses({SmsAuditServiceIT.class, IncomingControllerIT.class, SendControllerIT.class})
 public class IntegrationTests {
 }

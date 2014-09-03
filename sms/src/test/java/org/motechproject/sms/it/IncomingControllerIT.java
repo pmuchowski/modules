@@ -16,12 +16,12 @@ import javax.inject.Inject;
 import static junit.framework.Assert.assertNotNull;
 
 /**
- * Verify SmsService present & functional.
+ * Verify IncomingController present & functional.
  */
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerSuite.class)
 @ExamFactory(MotechNativeTestContainerFactory.class)
-public class SmsServiceIT extends BasePaxIT{
+public class IncomingControllerIT extends BasePaxIT{
 
     @Inject
     private SmsService smsService;

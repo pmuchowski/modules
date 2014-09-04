@@ -1,13 +1,15 @@
 package org.motechproject.sms.it;
 
 import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
-import org.joda.time.DateTime;
+import org.apache.http.entity.StringEntity;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.motechproject.sms.audit.*;
+import org.motechproject.sms.audit.SmsRecordsDataService;
+import org.motechproject.sms.service.OutgoingSms;
 import org.motechproject.testing.osgi.BasePaxIT;
 import org.motechproject.testing.osgi.TestContext;
 import org.motechproject.testing.osgi.container.MotechNativeTestContainerFactory;
@@ -18,10 +20,8 @@ import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerSuite;
 
 import javax.inject.Inject;
-import java.net.URI;
-import java.util.List;
+import java.util.Arrays;
 
-import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -45,11 +45,18 @@ public class SendControllerIT extends BasePaxIT {
     public void verifyFunctional() throws Exception {
         getLogger().info("verifyFunctional");
 
+        OutgoingSms outgoingSms = new OutgoingSms("foo", Arrays.asList("12065551212"), "hello, world");
+        ObjectMapper mapper = new ObjectMapper();
+        String outgoingSmsJson = mapper.writeValueAsString(outgoingSms);
+
         URIBuilder builder = new URIBuilder();
         builder.setScheme("http").setHost("localhost").setPort(TestContext.getJettyPort())
                 .setPath("/sms/send");
-        URI uri = builder.build();
-        HttpGet httpGet = new HttpGet(uri);
-        assertTrue(SimpleHttpClient.execHttpRequest(httpGet, HttpStatus.SC_OK));
+
+        HttpPost httpPost = new HttpPost(builder.build());
+        httpPost.setHeader("Content-type", "application/json");
+        httpPost.setEntity(new StringEntity(outgoingSmsJson));
+
+        assertTrue(SimpleHttpClient.execHttpRequest(httpPost, HttpStatus.SC_OK));
     }
 }

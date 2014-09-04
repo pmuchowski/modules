@@ -9,7 +9,7 @@
            "priority": 2,
            "rest": true,
            "origin": "SYSTEM_MODULE_SMS",
-           "version": "0.22",
+           "version": "0.25",
            "methodsRequired": [
                "ANY"
            ]
@@ -24,7 +24,7 @@
            "priority": 2,
            "rest": true,
            "origin": "SYSTEM_MODULE_SMS",
-           "version": "0.22",
+           "version": "0.25",
            "methodsRequired": [
                "ANY"
            ]

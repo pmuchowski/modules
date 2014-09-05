@@ -8,7 +8,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.motechproject.security.service.MotechUserService;
 import org.motechproject.sms.audit.SmsRecordsDataService;
 import org.motechproject.sms.service.OutgoingSms;
 import org.motechproject.testing.osgi.BasePaxIT;
@@ -21,9 +20,8 @@ import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerSuite;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.Arrays;
-import java.util.Locale;
 
 import static org.junit.Assert.assertTrue;
 
@@ -37,11 +35,6 @@ public class SendControllerIT extends BasePaxIT {
     @Inject
     private SmsRecordsDataService smsRecordsDataService;
 
-    @Inject
-    private MotechUserService motechUserService;
-
-    private final static String USERNAME = "username";
-    private final static String PASSWORD = "password";
 
     @Before
     public void waitForBeans() {
@@ -51,14 +44,15 @@ public class SendControllerIT extends BasePaxIT {
 
     @Before
     public void createUser() {
-        motechUserService.register(USERNAME, PASSWORD, "user@email.com", "user.id", new ArrayList<String>(), Locale.US);
-        getLogger().info("Created user '{}'", USERNAME);
+        try {
+            createAdminUser();
+        } catch (IOException|InterruptedException e) {
+            getLogger().error("Unable to create the admin user needed for this test: {}", e.getMessage());
+        }
     }
 
     @Test
     public void verifyFunctional() throws Exception {
-        getLogger().info("verifyFunctional");
-
         OutgoingSms outgoingSms = new OutgoingSms("foo", Arrays.asList("12065551212"), "hello, world");
         ObjectMapper mapper = new ObjectMapper();
         String outgoingSmsJson = mapper.writeValueAsString(outgoingSms);
@@ -71,12 +65,11 @@ public class SendControllerIT extends BasePaxIT {
         httpPost.setHeader("Content-type", "application/json");
         httpPost.setEntity(new StringEntity(outgoingSmsJson));
 
-        //TODO: Enable code below when we figure out a way around security
         // We're specifying a nonexistent config so the controller should respond with a 404
-        assertTrue(SimpleHttpClient.execHttpRequest(httpPost, HttpStatus.SC_NOT_FOUND, USERNAME, PASSWORD));
+        assertTrue(SimpleHttpClient.execHttpRequest(httpPost, HttpStatus.SC_NOT_FOUND, MOTECH_ADMIN_USERNAME,
+                MOTECH_ADMIN_PASSWORD));
 
-        //TODO: Also figure out how to create configs an then use them to pretend send using an SimpleHttpServer that
+        //TODO: figure out how to create configs an then use them to "pretend send" using an SimpleHttpServer that
         //TODO: responds the way an SMS provider would.
-
     }
 }

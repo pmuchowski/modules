@@ -10,6 +10,8 @@ import org.motechproject.sms.audit.SmsRecord;
 import org.motechproject.sms.configs.Config;
 import org.motechproject.sms.configs.ConfigReader;
 import org.motechproject.sms.configs.Configs;
+import org.motechproject.sms.domain.NewConfig;
+import org.motechproject.sms.service.SmsConfigService;
 import org.motechproject.sms.templates.Template;
 import org.motechproject.sms.templates.TemplateReader;
 import org.motechproject.sms.templates.Templates;
@@ -46,10 +48,12 @@ public class IncomingController {
     private Templates templates;
     private EventRelay eventRelay;
     private SmsAuditService smsAuditService;
+    private SmsConfigService smsConfigService;
 
     @Autowired
     public IncomingController(@Qualifier("smsSettings") SettingsFacade settingsFacade, EventRelay eventRelay,
-                              TemplateReader templateReader, SmsAuditService smsAuditService) {
+                              TemplateReader templateReader, SmsAuditService smsAuditService,
+                              SmsConfigService smsConfigService) {
         this.eventRelay = eventRelay;
         configReader = new ConfigReader(settingsFacade);
         //todo: this means we'll crash/error out when a new config is created and we get an incoming call before
@@ -57,6 +61,7 @@ public class IncomingController {
         configs = configReader.getConfigs();
         templates = templateReader.getTemplates();
         this.smsAuditService = smsAuditService;
+        this.smsConfigService = smsConfigService;
     }
 
 
@@ -70,6 +75,9 @@ public class IncomingController {
         String message = null;
         String providerMessageId = null;
         DateTime timestamp;
+
+        NewConfig newConfig = smsConfigService.getConfig(configName);
+        logger.info("Found the following NewConfig for '{}': {}", configName, newConfig.toString());
 
         logger.info("Incoming SMS - configName = {}, params = {}", configName, params);
 

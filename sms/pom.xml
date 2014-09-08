@@ -118,11 +118,11 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Context-File>META-INF/osgi/applicationSms.xml</Context-File>
                         <Context-Path>sms</Context-Path>
                         <Resource-Path>sms/resources</Resource-Path>
                         <Blueprint-Enabled>true</Blueprint-Enabled>
                         <Export-Package>
+                            org.motechproject.sms.domain;version=${project.version},
                             org.motechproject.sms.service;version=${project.version},
                             org.motechproject.sms.audit;version=${project.version}
                         </Export-Package>

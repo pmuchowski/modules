@@ -1,8 +1,7 @@
 package org.motechproject.sms.web;
 
-import org.motechproject.server.config.SettingsFacade;
-import org.motechproject.sms.configs.ConfigReader;
 import org.motechproject.sms.configs.Configs;
+import org.motechproject.sms.service.ConfigService;
 import org.motechproject.sms.service.TemplateService;
 import org.motechproject.sms.templates.TemplateForWeb;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +25,14 @@ import java.util.Map;
  */
 @Controller
 public class SettingsController {
-    private SettingsFacade settingsFacade;
     private TemplateService templateService;
+    private ConfigService configService;
 
     @Autowired
-    public SettingsController(@Qualifier("smsSettings") SettingsFacade settingsFacade,
-                              @Qualifier("templateService") TemplateService templateService) {
-        this.settingsFacade = settingsFacade;
+    public SettingsController(@Qualifier("templateService") TemplateService templateService,
+                              @Qualifier("configService") ConfigService configService) {
         this.templateService = templateService;
+        this.configService = configService;
     }
 
     @RequestMapping(value = "/templates", method = RequestMethod.GET)
@@ -45,17 +44,15 @@ public class SettingsController {
     @RequestMapping(value = "/configs", method = RequestMethod.GET)
     @ResponseBody
     public Configs getConfigs() {
-        ConfigReader configReader = new ConfigReader(settingsFacade);
-        return configReader.getConfigs();
+        return configService.getConfigs();
     }
 
     @RequestMapping(value = "/configs", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Configs setConfigs(@RequestBody Configs configs) {
-        ConfigReader configReader = new ConfigReader(settingsFacade);
-        configReader.setConfigs(configs);
-        return configReader.getConfigs();
+        configService.updateConfigs(configs);
+        return configService.getConfigs();
     }
 
     @ExceptionHandler(Exception.class)

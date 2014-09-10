@@ -14,10 +14,9 @@ import org.motechproject.sms.audit.SmsRecords;
 import org.motechproject.sms.configs.Config;
 import org.motechproject.sms.configs.ConfigReader;
 import org.motechproject.sms.configs.Configs;
+import org.motechproject.sms.service.TemplateService;
 import org.motechproject.sms.templates.Status;
 import org.motechproject.sms.templates.Template;
-import org.motechproject.sms.templates.TemplateReader;
-import org.motechproject.sms.templates.Templates;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,9 +53,9 @@ public class StatusController {
 
     private ConfigReader configReader;
     private Configs configs;
-    private Templates templates;
     private EventRelay eventRelay;
     private SmsAuditService smsAuditService;
+    private TemplateService templateService;
 
     private static final int RECORD_FIND_RETRY_COUNT = 3;
     private static final int RECORD_FIND_TIMEOUT = 500;
@@ -64,13 +63,14 @@ public class StatusController {
 
     @Autowired
     public StatusController(@Qualifier("smsSettings") SettingsFacade settingsFacade, EventRelay eventRelay,
-                            TemplateReader templateReader, SmsAuditService smsAuditService) {
+                            @Qualifier("templateService") TemplateService templateService,
+                            SmsAuditService smsAuditService) {
         this.eventRelay = eventRelay;
         configReader = new ConfigReader(settingsFacade);
         //todo: this means we'd crash/error out when a new config is created and we get a status update callback before
         //todo: restarting the module  -  so for now we'll read configs each time handle() gets called
         //todo: but ultimately we'll want something like: configs = configReader.getConfigs()
-        templates = templateReader.getTemplates();
+        this.templateService = templateService;
         this.smsAuditService = smsAuditService;
     }
 
@@ -202,7 +202,7 @@ public class StatusController {
             statusMessageService.warn(msg, SMS_MODULE);
             config = configs.getDefaultConfig();
         }
-        Template template = templates.getTemplate(config.getTemplateName());
+        Template template = templateService.getTemplate(config.getTemplateName());
         Status status = template.getStatus();
 
         if (status.hasMessageIdKey() && params != null && params.containsKey(status.getMessageIdKey())) {

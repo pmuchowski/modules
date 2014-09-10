@@ -10,9 +10,8 @@ import org.motechproject.sms.audit.SmsRecord;
 import org.motechproject.sms.configs.Config;
 import org.motechproject.sms.configs.ConfigReader;
 import org.motechproject.sms.configs.Configs;
+import org.motechproject.sms.service.TemplateService;
 import org.motechproject.sms.templates.Template;
-import org.motechproject.sms.templates.TemplateReader;
-import org.motechproject.sms.templates.Templates;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +43,7 @@ public class IncomingController {
     private Logger logger = LoggerFactory.getLogger(IncomingController.class);
     private ConfigReader configReader;
     private Configs configs;
-    private Templates templates;
+    private TemplateService templateService;
     private EventRelay eventRelay;
     private SmsAuditService smsAuditService;
 
@@ -52,13 +51,14 @@ public class IncomingController {
 
     @Autowired
     public IncomingController(@Qualifier("smsSettings") SettingsFacade settingsFacade, EventRelay eventRelay,
-                              TemplateReader templateReader, SmsAuditService smsAuditService) {
+                              @Qualifier("templateService") TemplateService templateService,
+                              SmsAuditService smsAuditService) {
         this.eventRelay = eventRelay;
         configReader = new ConfigReader(settingsFacade);
         //todo: this means we'll crash/error out when a new config is created and we get an incoming call before
         //todo: restarting the module but going to the new config system (with change notification) will fix that
         configs = configReader.getConfigs();
-        templates = templateReader.getTemplates();
+        this.templateService = templateService;
         this.smsAuditService = smsAuditService;
     }
 
@@ -85,7 +85,7 @@ public class IncomingController {
             statusMessageService.warn(msg, SMS_MODULE);
             return;
         }
-        Template template = templates.getTemplate(config.getTemplateName());
+        Template template = templateService.getTemplate(config.getTemplateName());
 
         if (params.containsKey(template.getIncoming().getSenderKey())) {
             sender = params.get(template.getIncoming().getSenderKey());

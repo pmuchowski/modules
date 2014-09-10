@@ -3,8 +3,8 @@ package org.motechproject.sms.service;
 import org.joda.time.DateTime;
 import org.motechproject.event.MotechEvent;
 import org.motechproject.event.listener.EventRelay;
-import org.motechproject.scheduler.service.MotechSchedulerService;
 import org.motechproject.scheduler.contract.RunOnceSchedulableJob;
+import org.motechproject.scheduler.service.MotechSchedulerService;
 import org.motechproject.server.config.SettingsFacade;
 import org.motechproject.sms.SmsEventParams;
 import org.motechproject.sms.SmsEventSubjects;
@@ -15,8 +15,6 @@ import org.motechproject.sms.configs.Config;
 import org.motechproject.sms.configs.ConfigReader;
 import org.motechproject.sms.configs.Configs;
 import org.motechproject.sms.templates.Template;
-import org.motechproject.sms.templates.TemplateReader;
-import org.motechproject.sms.templates.Templates;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,12 +41,13 @@ public class SmsServiceImpl implements SmsService {
     private Logger logger = LoggerFactory.getLogger(SmsServiceImpl.class);
     private EventRelay eventRelay;
     private MotechSchedulerService schedulerService;
-    private Templates templates;
+    private TemplateService templateService;
     private SmsAuditService smsAuditService;
 
     @Autowired
     public SmsServiceImpl(@Qualifier("smsSettings") SettingsFacade settingsFacade, EventRelay eventRelay,
-                          MotechSchedulerService schedulerService, TemplateReader templateReader,
+                          MotechSchedulerService schedulerService,
+                          @Qualifier("templateService") TemplateService templateService,
                           SmsAuditService smsAuditService) {
         //todo: persist configs or reload them for each call?
         //todo: right now I'm doing the latter...
@@ -56,7 +55,7 @@ public class SmsServiceImpl implements SmsService {
         this.settingsFacade = settingsFacade;
         this.eventRelay = eventRelay;
         this.schedulerService = schedulerService;
-        templates = templateReader.getTemplates();
+        this.templateService = templateService;
         this.smsAuditService = smsAuditService;
     }
 
@@ -140,7 +139,7 @@ public class SmsServiceImpl implements SmsService {
             logger.debug("No config specified, using default config.");
             config = configs.getDefaultConfig();
         }
-        template = templates.getTemplate(config.getTemplateName());
+        template = templateService.getTemplate(config.getTemplateName());
 
         //todo: die if things aren't right, right?
         //todo: SMS_SCHEDULE_FUTURE_SMS research if any sms provider provides that, for now assume not.

@@ -57,6 +57,10 @@
                   interface="org.motechproject.sms.service.SmsService"
                   auto-export="interfaces"/>
 
+    <osgi:service ref="templateService"
+                  interface="org.motechproject.sms.service.TemplateService"
+                  auto-export="interfaces"/>
+
     <osgi:service ref="smsAuditService" interface="org.motechproject.sms.audit.SmsAuditService" />
 
     <osgi:reference id="configurationService"

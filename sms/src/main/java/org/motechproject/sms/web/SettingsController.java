@@ -3,9 +3,8 @@ package org.motechproject.sms.web;
 import org.motechproject.server.config.SettingsFacade;
 import org.motechproject.sms.configs.ConfigReader;
 import org.motechproject.sms.configs.Configs;
+import org.motechproject.sms.service.TemplateService;
 import org.motechproject.sms.templates.TemplateForWeb;
-import org.motechproject.sms.templates.TemplateReader;
-import org.motechproject.sms.templates.Templates;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -28,19 +27,19 @@ import java.util.Map;
 @Controller
 public class SettingsController {
     private SettingsFacade settingsFacade;
-    private TemplateReader templateReader;
+    private TemplateService templateService;
 
     @Autowired
-    public SettingsController(@Qualifier("smsSettings") SettingsFacade settingsFacade, TemplateReader templateReader) {
+    public SettingsController(@Qualifier("smsSettings") SettingsFacade settingsFacade,
+                              @Qualifier("templateService") TemplateService templateService) {
         this.settingsFacade = settingsFacade;
-        this.templateReader = templateReader;
+        this.templateService = templateService;
     }
 
     @RequestMapping(value = "/templates", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, TemplateForWeb> getTemplates() {
-        Templates templates = templateReader.getTemplates();
-        return templates.templatesForWeb();
+        return templateService.allTemplatesForWeb();
     }
 
     @RequestMapping(value = "/configs", method = RequestMethod.GET)

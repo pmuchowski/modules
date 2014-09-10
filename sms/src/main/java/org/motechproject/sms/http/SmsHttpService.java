@@ -21,10 +21,9 @@ import org.motechproject.sms.configs.ConfigProp;
 import org.motechproject.sms.configs.ConfigReader;
 import org.motechproject.sms.configs.Configs;
 import org.motechproject.sms.service.OutgoingSms;
+import org.motechproject.sms.service.TemplateService;
 import org.motechproject.sms.templates.Response;
 import org.motechproject.sms.templates.Template;
-import org.motechproject.sms.templates.TemplateReader;
-import org.motechproject.sms.templates.Templates;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +52,7 @@ public class SmsHttpService {
     private Logger logger = LoggerFactory.getLogger(SmsHttpService.class);
     private ConfigReader configReader;
     private Configs configs;
-    private Templates templates;
+    private TemplateService templateService;
     private EventRelay eventRelay;
     private HttpClient commonsHttpClient;
     private SmsAuditService smsAuditService;
@@ -61,13 +60,14 @@ public class SmsHttpService {
     private StatusMessageService statusMessageService;
 
     @Autowired
-    public SmsHttpService(@Qualifier("smsSettings") SettingsFacade settingsFacade, TemplateReader templateReader,
+    public SmsHttpService(@Qualifier("smsSettings") SettingsFacade settingsFacade,
+                          @Qualifier("templateService") TemplateService templateService,
                           EventRelay eventRelay, HttpClient commonsHttpClient, SmsAuditService smsAuditService,
                           ConfigurationService configurationService, StatusMessageService statusMessageService) {
 
         //todo: unified module-wide caching & refreshing strategy
         configReader = new ConfigReader(settingsFacade);
-        templates = templateReader.getTemplates();
+        this.templateService = templateService;
         this.eventRelay = eventRelay;
         this.commonsHttpClient = commonsHttpClient;
         this.smsAuditService = smsAuditService;
@@ -220,7 +220,7 @@ public class SmsHttpService {
         configs = configReader.getConfigs();
 
         Config config = configs.getConfigOrDefault(sms.getConfig());
-        Template template = templates.getTemplate(config.getTemplateName());
+        Template template = templateService.getTemplate(config.getTemplateName());
         HttpMethod httpMethod = null;
         Integer failureCount = sms.getFailureCount();
         Integer httpStatus = null;

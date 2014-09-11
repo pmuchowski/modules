@@ -9,6 +9,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.sms.audit.SmsRecordsDataService;
+import org.motechproject.sms.configs.Config;
+import org.motechproject.sms.configs.Configs;
+import org.motechproject.sms.service.ConfigService;
 import org.motechproject.sms.service.OutgoingSms;
 import org.motechproject.testing.osgi.BasePaxIT;
 import org.motechproject.testing.osgi.TestContext;
@@ -35,6 +38,8 @@ public class SendControllerIT extends BasePaxIT {
     @Inject
     private SmsRecordsDataService smsRecordsDataService;
 
+    @Inject
+    private ConfigService configService;
 
     @Before
     public void waitForBeans() {
@@ -71,5 +76,33 @@ public class SendControllerIT extends BasePaxIT {
 
         //TODO: figure out how to create configs an then use them to "pretend send" using an SimpleHttpServer that
         //TODO: responds the way an SMS provider would.
+    }
+
+    @Test
+    public void shouldSend() throws Exception {
+
+        //
+        // Setup Configs
+        //
+        Config config = new Config();
+        config.setName("myConfig");
+        Configs configs = new Configs();
+        configs.setConfigs(Arrays.asList(config));
+        configService.updateConfigs(configs);
+
+        OutgoingSms outgoingSms = new OutgoingSms("myConfig", Arrays.asList("12065551212"), "hello, world");
+        ObjectMapper mapper = new ObjectMapper();
+        String outgoingSmsJson = mapper.writeValueAsString(outgoingSms);
+
+        URIBuilder builder = new URIBuilder();
+        builder.setScheme("http").setHost("localhost").setPort(TestContext.getJettyPort())
+                .setPath("/sms/send");
+
+        HttpPost httpPost = new HttpPost(builder.build());
+        httpPost.setHeader("Content-type", "application/json");
+        httpPost.setEntity(new StringEntity(outgoingSmsJson));
+
+        assertTrue(SimpleHttpClient.execHttpRequest(httpPost, HttpStatus.SC_OK, MOTECH_ADMIN_USERNAME,
+                MOTECH_ADMIN_PASSWORD));
     }
 }

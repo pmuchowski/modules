@@ -24,21 +24,6 @@
     <dependencies>
         <dependency>
             <groupId>org.motechproject</groupId>
-            <artifactId>motech-platform-osgi-extender-fragment</artifactId>
-            <version>${motech.version}</version>
-        </dependency>
-
-        <!-- OSGi IT -->
-        <dependency>
-            <groupId>org.motechproject</groupId>
-            <artifactId>motech-pax-it</artifactId>
-            <version>${motech.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Repository -->
-        <dependency>
-            <groupId>org.motechproject</groupId>
             <artifactId>motech-platform-dataservices</artifactId>
             <version>${motech.version}</version>
             <exclusions>
@@ -50,13 +35,13 @@
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <version>${httpclient.version}</version>
+            <artifactId>com.springsource.org.apache.httpcomponents.httpcore</artifactId>
+            <version>4.2.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>${httpclient.version}</version>
+            <artifactId>com.springsource.org.apache.httpcomponents.httpclient</artifactId>
+            <version>4.2.1</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
@@ -114,7 +99,6 @@
                             org.motechproject.ivr.repository;version=${project.version},
                             org.motechproject.ivr.domain;version=${project.version},
                         </Export-Package>
-                        <Import-Package>*</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>

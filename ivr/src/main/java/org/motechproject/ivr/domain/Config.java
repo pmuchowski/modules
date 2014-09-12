@@ -1,10 +1,5 @@
 package org.motechproject.ivr.domain;
 
-import org.motechproject.mds.annotations.Entity;
-import org.motechproject.mds.annotations.Field;
-
-import javax.jdo.annotations.Column;
-import javax.jdo.annotations.Unique;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,44 +7,33 @@ import java.util.Map;
 /**
  * IVR provider configuration, represents how the IVR module interacts with an IVR provider
  */
-@Entity
 public class Config {
-
-    // See http://stackoverflow.com/questions/417142/what-is-the-maximum-length-of-a-url-in-different-browsers
-    private static final int MAX_URL_SIZE = 2000;
 
     /**
      * How a config is identified
      */
-    @Field
-    @Unique
     private String name;
 
     /**
      * List of fields the IVR provider sends to the status controller which shouldn't be included (ie: ignored) in
      * the CDR data
      */
-    @Field
     private List<String> ignoredStatusFields;
 
     /**
      * Template string used to issue an HTTP GET call to the IVR provider in order to initiate an outgoing (MT) call.
      * [xxx] placeholders are replaced with the values provided in the initiateCall() method.
      */
-    @Field
-    @Column(length = MAX_URL_SIZE)
     private String outgoingCallUriTemplate;
 
     /**
      * Which HTTP method should be used to trigger an outgoing call from the IVR provider
      */
-    @Field
     private HttpMethod outgoingCallMethod;
 
     /**
      * A map of parameters to be substituted in the outgoing URI template
      */
-    @Field
     private Map<String, String> statusFieldMap = new HashMap<>();
 
     public Config(String name, List<String> ignoredStatusFields, Map<String, String> statusFieldMap,

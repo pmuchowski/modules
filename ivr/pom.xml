@@ -85,6 +85,10 @@
                         <Blueprint-Enabled>true</Blueprint-Enabled>
                         <Context-Path>ivr</Context-Path>
                         <Resource-Path>ivr/resources</Resource-Path>
+                        <Import-Package>
+                            org.motechproject.config.service,
+                            *
+                        </Import-Package>>
                         <Export-Package>
                             ${motech.groupId}.ivr.service;version=${project.version},
                             ${motech.groupId}.ivr.repository;version=${project.version},

@@ -27,22 +27,16 @@ public class ConfigTest {
 
     @Test
     public void verifyMappedStatusFields() {
-        Map<String, String> statusMap = new HashMap<>();
-        statusMap.put("foo", "bar");
-
-        Config config = new Config(null, null, statusMap, null, null);
+        Config config = new Config(null, null, "foo:bar", null, null);
         assertEquals("bar", config.mapStatusField("foo"));
         assertEquals("zee", config.mapStatusField("zee"));
     }
 
     @Test
     public void configToJson() {
-        Map<String, String> statusMap = new HashMap<>();
-        statusMap.put("foo", "bar");
-
-        Config config1 = new Config("myConfig1", Arrays.asList("foo", "bar"), statusMap, HttpMethod.GET,
+        Config config1 = new Config("myConfig1", Arrays.asList("foo", "bar"), "foo:bar", HttpMethod.GET,
                 "http://foo.com/bar");
-        Config config2 = new Config("myConfig2", Arrays.asList("foo", "bar"), statusMap, HttpMethod.GET,
+        Config config2 = new Config("myConfig2", Arrays.asList("foo", "bar"), "foo:bar", HttpMethod.GET,
                 "http://foo.com/bar");
         List<Config> configs = Arrays.asList(config1, config2);
 

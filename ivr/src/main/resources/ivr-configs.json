@@ -1,26 +1,16 @@
 [
     {
-        "name": "myConfig1",
-        "ignoredStatusFields": [
-            "foo",
-            "bar"
-        ],
-        "outgoingCallUriTemplate": "http://foo.com/bar",
+        "name": "config1",
+        "outgoingCallUriTemplate": "http://foo.com/foo",
         "outgoingCallMethod": "GET",
-        "statusFieldMap": {
-            "foo": "bar"
-        }
+        "ignoredStatusFields": ["foo","bar"],
+        "statusFieldMap": {"foo":"bar"}
     },
     {
-        "name": "myConfig2",
-        "ignoredStatusFields": [
-            "foo",
-            "bar"
-        ],
+        "name": "config2",
         "outgoingCallUriTemplate": "http://foo.com/bar",
         "outgoingCallMethod": "GET",
-        "statusFieldMap": {
-            "foo": "bar"
-        }
+        "ignoredStatusFields": [],
+        "statusFieldMap": {}
     }
 ]

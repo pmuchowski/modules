@@ -1,5 +1,8 @@
 package org.motechproject.ivr.domain;
 
+import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,15 +37,38 @@ public class Config {
     /**
      * A map of parameters to be substituted in the outgoing URI template
      */
+    @JsonIgnore
     private Map<String, String> statusFieldMap = new HashMap<>();
+    /**
+     * This field is used to pass the status field back & forth to the UI
+     */
+    private String statusFieldMapString;
 
-    public Config(String name, List<String> ignoredStatusFields, Map<String, String> statusFieldMap,
+    public Config(String name, List<String> ignoredStatusFields, String statusFieldMapString,
                   HttpMethod outgoingCallMethod, String outgoingCallUriTemplate) {
         this.name = name;
         this.ignoredStatusFields = ignoredStatusFields;
         this.outgoingCallUriTemplate = outgoingCallUriTemplate;
         this.outgoingCallMethod = outgoingCallMethod;
-        this.statusFieldMap = statusFieldMap;
+        this.statusFieldMapString = statusFieldMapString;
+        this.statusFieldMap = parseStatusMapString(statusFieldMapString);
+    }
+
+    private Map<String, String> parseStatusMapString(String string) {
+        Map<String, String> map = new HashMap<>();
+        if (StringUtils.isBlank(string)) {
+            return map;
+        }
+        String[] strings = string.split("\\s*,\\s*");
+        for (String s : strings) {
+            String[] kv = s.split("\\s*:\\s*");
+            if (kv.length == 2) {
+                map.put(kv[0], kv[1]);
+            } else {
+                throw new IllegalArgumentException(String.format("%s is an invalid map", string));
+            }
+        }
+        return map;
     }
 
     public String getName() {
@@ -58,20 +84,41 @@ public class Config {
         return (null != ignoredStatusFields && ignoredStatusFields.contains(fieldName));
     }
 
+    public void setStatusFieldMapString(String statusFieldMapString) {
+        this.statusFieldMapString = statusFieldMapString;
+        this.statusFieldMap = parseStatusMapString(statusFieldMapString);
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public List<String> getIgnoredStatusFields() {
         return ignoredStatusFields;
+    }
+
+    public void setIgnoredStatusFields(List<String> ignoredStatusFields) {
+        this.ignoredStatusFields = ignoredStatusFields;
     }
 
     public String getOutgoingCallUriTemplate() {
         return outgoingCallUriTemplate;
     }
 
+    public void setOutgoingCallUriTemplate(String outgoingCallUriTemplate) {
+        this.outgoingCallUriTemplate = outgoingCallUriTemplate;
+    }
+
     public HttpMethod getOutgoingCallMethod() {
         return outgoingCallMethod;
     }
 
-    public Map<String, String> getStatusFieldMap() {
-        return statusFieldMap;
+    public void setOutgoingCallMethod(HttpMethod outgoingCallMethod) {
+        this.outgoingCallMethod = outgoingCallMethod;
+    }
+
+    public String getStatusFieldMapString() {
+        return statusFieldMapString;
     }
 
     /**
@@ -106,11 +153,12 @@ public class Config {
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
+        int result = name.hashCode();
         result = 31 * result + (ignoredStatusFields != null ? ignoredStatusFields.hashCode() : 0);
         result = 31 * result + (outgoingCallUriTemplate != null ? outgoingCallUriTemplate.hashCode() : 0);
         result = 31 * result + (outgoingCallMethod != null ? outgoingCallMethod.hashCode() : 0);
         result = 31 * result + (statusFieldMap != null ? statusFieldMap.hashCode() : 0);
+        result = 31 * result + (statusFieldMapString != null ? statusFieldMapString.hashCode() : 0);
         return result;
     }
 
@@ -118,10 +166,11 @@ public class Config {
     public String toString() {
         return "Config{" +
                 "name='" + name + '\'' +
-                ", ignoredStatusFields='" + ignoredStatusFields + '\'' +
+                ", ignoredStatusFields=" + ignoredStatusFields +
                 ", outgoingCallUriTemplate='" + outgoingCallUriTemplate + '\'' +
-                ", outgoingCallMethod='" + outgoingCallMethod + '\'' +
-                ", statusFieldMap='" + statusFieldMap + '\'' +
+                ", outgoingCallMethod=" + outgoingCallMethod +
+                ", statusFieldMap=" + statusFieldMap +
+                ", statusFieldMapString='" + statusFieldMapString + '\'' +
                 '}';
     }
 }

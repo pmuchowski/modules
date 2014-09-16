@@ -99,25 +99,22 @@
             </plugin>
 
             <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.6</version>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jslint-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>copy-bundles</id>
-                        <phase>package</phase>
                         <goals>
-                            <goal>copy-resources</goal>
+                            <goal>jslint</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${user.home}/.motech/bundles</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>target</directory>
-                                    <includes>
-                                        <include>*.jar</include>
-                                    </includes>
-                                </resource>
-                            </resources>
+                            <sourceJsFolder>${basedir}/src/main/resources/webapp/js</sourceJsFolder>
+                            <disallowIncrAndDecr>true</disallowIncrAndDecr>
+                            <requireUseStrict>true</requireUseStrict>
+                            <predefinedVars>
+                                $, angular, motechAlert, handleWithStackTrace, jQuery, parseUri,
+                                innerLayout
+                            </predefinedVars>
+                            <failOnIssues>${jslint.enable}</failOnIssues>
                         </configuration>
                     </execution>
                 </executions>
@@ -163,7 +160,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
-                        <version>2.17</version>
                         <executions>
                             <!-- Execute only the test suite -->
                             <execution>

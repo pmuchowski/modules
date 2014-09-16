@@ -71,9 +71,7 @@ public class StatusControllerIT extends BasePaxIT {
 
         //Create a config
         List<String> ignoredStatusFields = Arrays.asList("ignoreme", "ignoreme2");
-        Map<String, String> statusMap = new HashMap<>();
-        statusMap.put("FROM", "from");
-        configService.updateConfigs(Arrays.asList(new Config("foo", ignoredStatusFields, statusMap, null, null)));
+        configService.updateConfigs(Arrays.asList(new Config("foo", ignoredStatusFields, "FROM:from", null, null)));
 
         //Create & send a CDR status callback
         String motechCallId = UUID.randomUUID().toString();

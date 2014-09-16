@@ -11,6 +11,7 @@ import java.util.List;
  */
 public interface ConfigService {
     Config getConfig(String name);
+    List<Config> allConfigs();
     boolean hasConfig(String name);
     void updateConfigs(List<Config> configs);
 }

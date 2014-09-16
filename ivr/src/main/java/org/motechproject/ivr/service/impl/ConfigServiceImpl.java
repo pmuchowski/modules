@@ -19,6 +19,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,9 +39,11 @@ public class ConfigServiceImpl implements ConfigService {
         List<Config> configList = null;
         try (InputStream is = settingsFacade.getRawConfig(CONFIG_FILE_NAME)) {
             String jsonText = IOUtils.toString(is);
+            LOGGER.debug("Read the following json from {}:\n{}", CONFIG_FILE_NAME, jsonText);
             Gson gson = new Gson();
             configList = gson.fromJson(jsonText, new TypeToken<List<Config>>() { } .getType());
         } catch (Exception e) {
+            LOGGER.debug("There seems to be a problem with the json text in {}: {}", CONFIG_FILE_NAME, e.getMessage());
             throw new JsonIOException("Malformed " + CONFIG_FILE_NAME + " file? " + e.toString(), e);
         }
 
@@ -72,6 +75,10 @@ public class ConfigServiceImpl implements ConfigService {
         String message = String.format("Unknown config: '%s'.", name);
         LOGGER.error(message);
         throw new IllegalArgumentException(message);
+    }
+
+    public List<Config> allConfigs() {
+        return new ArrayList<Config>(configs.values());
     }
 
     public boolean hasConfig(String name) {

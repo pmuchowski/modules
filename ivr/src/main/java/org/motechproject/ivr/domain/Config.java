@@ -55,6 +55,7 @@ public class Config {
     }
 
     private Map<String, String> parseStatusMapString(String string) {
+        //todo: replace that with guava Splitter when guava 18.0 is available in external-osgi-bundles
         Map<String, String> map = new HashMap<>();
         if (StringUtils.isBlank(string)) {
             return map;

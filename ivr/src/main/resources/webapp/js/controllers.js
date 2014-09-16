@@ -101,7 +101,7 @@
                 'outgoingCallUriTemplate':'',
                 'outgoingCallMethod':'GET',
                 'ignoredStatusFields':[],
-                'statusFieldMap':''
+                'statusFieldMapString':''
                 };
             newLength = $scope.configs.push(newConfig);
             $scope.accordions.push(true);

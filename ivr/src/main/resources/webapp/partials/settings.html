@@ -66,7 +66,7 @@
                                 <label class="col-md-2 control-label" for="ignoredStatusFields{{$index}}">{{msg('ivr.web.settings.ignoredStatusFields')}}</label>
                                 <div class="col-md-6"
                                      tooltip="{{msg('ivr.web.settings.ignoredStatusFields.tooltip')}}">
-                                    <input class="form-control" id="ignoredStatusFields{{$index}}" type="text" ng-model="conf.ignoredStatusFields">
+                                    <input class="form-control" id="ignoredStatusFields{{$index}}" type="text" ng-model="conf.ignoredStatusFields" ng-list=",">
                                 </div>
                             </div>
 
@@ -74,7 +74,7 @@
                                 <label class="col-md-2 control-label" for="statusFieldMap{{$index}}">{{msg('ivr.web.settings.statusFieldMap')}}</label>
                                 <div class="col-md-6"
                                      tooltip="{{msg('ivr.web.settings.statusFieldMap.tooltip')}}">
-                                    <input class="form-control" id="statusFieldMap{{$index}}" type="text" ng-pattern="/^(\s*\w*\s*:\s*\w*\s*)?(,\s*\w*\s*:\s*\w*\s*)*$/" ng-model="conf.statusFieldMap">
+                                    <input class="form-control" id="statusFieldMap{{$index}}" type="text" ng-pattern="/^(\s*\w*\s*:\s*\w*\s*)?(,\s*\w*\s*:\s*\w*\s*)*$/" ng-model="conf.statusFieldMapString">
                                 </div>
                             </div>
 

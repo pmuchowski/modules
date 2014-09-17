@@ -28,13 +28,13 @@ public class ConfigController {
         this.configService = configService;
     }
 
-    @RequestMapping(value = "/configs", method = RequestMethod.GET)
+    @RequestMapping(value = "/ivr-configs", method = RequestMethod.GET)
     @ResponseBody
     public List<Config> getConfigs() {
         return configService.allConfigs();
     }
 
-    @RequestMapping(value = "/configs", method = RequestMethod.POST)
+    @RequestMapping(value = "/ivr-configs", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<Config> updateConfigs(@RequestBody List<Config> configs) {

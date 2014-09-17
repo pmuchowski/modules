@@ -57,14 +57,14 @@
             return false;
         };
 
-        $http.get('../ivr/configs')
+        $http.get('ivr-configs')
             .success(function(response){
                 $scope.configs = response;
                 $scope.originalConfigs = angular.copy($scope.configs);
                 setAccordions($scope.configs);
             })
             .error(function(response) {
-                $scope.errors.push($scope.msg('ivr.web.settings.validate.noConfig', response));
+                $scope.errors.push($scope.msg('ivr.web.settings.noConfig', response));
             });
 
         $scope.collapseAccordions = function () {
@@ -133,7 +133,7 @@
         }
 
         $scope.submit = function () {
-            $http.post('../ivr/configs', $scope.configs)
+            $http.post('ivr-configs', $scope.configs)
                 .success(function (response) {
                     $scope.configs = response;
                     $scope.originalConfigs = angular.copy($scope.configs);

@@ -1,10 +1,8 @@
 (function () {
     'use strict';
 
-    /* App Module */
-
-    angular.module('ivr', ['motech-dashboard', 'ivr.controllers', 'ngCookies', 'ui.bootstrap', 'ngRoute',
-        'ngSanitize']).config(
+    angular.module('ivr', ['motech-dashboard', 'ivr.controllers', 'ivr.directives', 'ngCookies', 'ui.bootstrap',
+        'ngRoute']).config(
     ['$routeProvider',
         function ($routeProvider) {
             $routeProvider.

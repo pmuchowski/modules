@@ -24,7 +24,7 @@ public class Config {
     private List<String> ignoredStatusFields;
 
     /**
-     * Template string used to issue an HTTP GET call to the IVR provider in order to initiate an outgoing (MT) call.
+     * Template string used to issue an HTTP call to the IVR provider in order to initiate an outgoing (MT) call.
      * [xxx] placeholders are replaced with the values provided in the initiateCall() method.
      */
     private String outgoingCallUriTemplate;

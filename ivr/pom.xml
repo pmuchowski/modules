@@ -14,7 +14,7 @@
     <version>0.25-SNAPSHOT</version>
     <description>IVR Module</description>
     <artifactId>ivr</artifactId>
-    <name>IVR</name>
+    <name>IVR Module</name>
     <packaging>bundle</packaging>
 
     <properties>
@@ -173,7 +173,6 @@
                                         <include>**/**/*IntegrationTests.java</include>
                                     </includes>
                                     <summaryFile>target/failsafe-reports/failsafe-summary-it.xml</summaryFile>
-                                    <forkCount>1</forkCount>
                                 </configuration>
                             </execution>
                             <!-- Don't run the old OSGi test execution -->

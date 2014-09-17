@@ -14,7 +14,7 @@
     <version>0.25-SNAPSHOT</version>
     <description>IVR Module</description>
     <artifactId>ivr</artifactId>
-    <name>IVR Module</name>
+    <name>IVR</name>
     <packaging>bundle</packaging>
 
     <properties>

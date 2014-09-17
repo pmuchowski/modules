@@ -64,7 +64,7 @@
                 setAccordions($scope.configs);
             })
             .error(function(response) {
-                $scope.errors.push($scope.msg('ivr.settings.validate.no_config', response));
+                $scope.errors.push($scope.msg('ivr.web.settings.validate.noConfig', response));
             });
 
         $scope.collapseAccordions = function () {
@@ -109,23 +109,6 @@
             $scope.dupeNames.push(false);
         };
 
-        $scope.betterMsg = function (name, templateName) {
-            var ret, key;
-            if (templateName !== null) {
-                key = 'ivr.settings.prop.' + name + '.' + templateName;
-                ret = $scope.msg(key);
-                if (ret !== '[' + key + ']') {
-                    return ret;
-                }
-            }
-            key = 'ivr.settings.prop.' + name;
-            ret = $scope.msg(key);
-            if (ret === '[' + key + ']') {
-                 ret = name;
-            }
-            return ret;
-        };
-
         $scope.tooltipOrBlank = function (name, templateName) {
             var key, ret;
             if (templateName !== null) {
@@ -155,7 +138,7 @@
                     $scope.configs = response;
                     $scope.originalConfigs = angular.copy($scope.configs);
                     setAccordions($scope.configs);
-                    var index = $scope.messages.push($scope.msg('ivr.settings.saved'));
+                    var index = $scope.messages.push($scope.msg('ivr.web.settings.saved'));
                     hideMsgLater(index-1);
                 })
                 .error (function (response) {

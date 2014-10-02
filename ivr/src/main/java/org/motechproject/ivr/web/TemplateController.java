@@ -48,17 +48,19 @@ public class TemplateController {
     private ConfigService configService;
     private StatusMessageService statusMessageService;
     private EventRelay eventRelay;
+    MDSLookupService mdsLookupService;
 
     @Autowired
     public TemplateController(CallDetailRecordDataService callDetailRecordDataService,
                               TemplateService templateService, EventRelay eventRelay,
                               @Qualifier("configService") ConfigService configService,
-                              StatusMessageService statusMessageService) {
+                              StatusMessageService statusMessageService, MDSLookupService mdsLookupService) {
         this.callDetailRecordDataService = callDetailRecordDataService;
         this.templateService = templateService;
         this.eventRelay = eventRelay;
         this.configService = configService;
         this.statusMessageService = statusMessageService;
+        this.mdsLookupService = mdsLookupService;
         try {
             Velocity.init();
         } catch (Exception e) {

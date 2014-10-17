@@ -8,9 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.ivr.domain.CallDetailRecord;
-import org.motechproject.ivr.domain.CallStatus;
 import org.motechproject.ivr.domain.Config;
-import org.motechproject.ivr.domain.Template;
 import org.motechproject.ivr.repository.CallDetailRecordDataService;
 import org.motechproject.ivr.service.ConfigService;
 import org.motechproject.testing.osgi.BasePaxIT;
@@ -24,9 +22,14 @@ import org.ops4j.pax.exam.spi.reactors.PerSuite;
 
 import javax.inject.Inject;
 import java.net.URI;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Verify StatusController present & functional.
@@ -113,7 +116,7 @@ public class StatusControllerIT extends BasePaxIT {
         assertEquals("+12066661212", callDetailRecord.getTo());
         assertFalse(callDetailRecord.getProviderExtraData().containsKey("ignoreme"));
         assertFalse(callDetailRecord.getProviderExtraData().containsKey("ignoreme2"));
-        assertEquals(CallStatus.ANSWERED, callDetailRecord.getCallStatus());
+        assertEquals("ANSWERED", callDetailRecord.getCallStatus());
         assertEquals(1, callDetailRecord.getProviderExtraData().keySet().size());
         assertEquals(callDetailRecord.getProviderExtraData().get("foo"), "bar");
         assertNull(callDetailRecord.getTemplateName());

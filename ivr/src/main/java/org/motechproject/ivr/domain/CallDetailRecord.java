@@ -10,6 +10,7 @@ import org.motechproject.mds.annotations.UIDisplayable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jdo.annotations.Column;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,11 +29,14 @@ public class CallDetailRecord {
     private static final int COL10 = 9;
     private static final int COL11 = 10;
     private static final int COL12 = 11;
-    private static final int MAX_ENTITY_STRING_LENGTH = 255;
+    private static final int MAX_FIELD_LENGTH = 255;
+    private static final int MAX_EXTRA_DATA_LENGTH = 1000;
     private static final DateTimeFormatter DT_FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSSS");
     private static final Logger LOGGER = LoggerFactory.getLogger(CallDetailRecord.class);
 
-
+    public static final String CALL_STATUS_UNKNOWN = "unknown";
+    public static final String CALL_STATUS_FAILED = "failed";
+    public static final String CALL_STATUS_MOTECH_INITIATED = "motech-initiated";
 
     @Field
     @UIDisplayable(position = COL1)
@@ -64,7 +68,7 @@ public class CallDetailRecord {
 
     @Field
     @UIDisplayable(position = COL6)
-    private CallStatus callStatus;
+    private String callStatus;
 
     @Field
     @UIDisplayable(position = COL7)
@@ -79,18 +83,19 @@ public class CallDetailRecord {
     private String providerCallId;
 
     @Field
+    @Column(length = MAX_EXTRA_DATA_LENGTH)
     @UIDisplayable(position = COL8)
     private Map<String, String> providerExtraData;
 
     public CallDetailRecord() {
         providerExtraData = new HashMap<>();
-        callStatus = CallStatus.UNKNOWN;
-        this.motechTimestamp = DT_FORMATTER.print(DateTime.now());
+        motechTimestamp = DT_FORMATTER.print(DateTime.now());
+        callStatus = CALL_STATUS_UNKNOWN;
     }
 
     public CallDetailRecord(String configName,  //NO CHECKSTYLE ParameterNumber
                             String providerTimestamp, String from, String to, CallDirection callDirection,
-                            CallStatus callStatus, String templateName, String motechCallId, String providerCallId,
+                            String callStatus, String templateName, String motechCallId, String providerCallId,
                             Map<String, String> providerExtraData) {
         this();
         this.configName = configName;
@@ -160,7 +165,7 @@ public class CallDetailRecord {
         return callDirection;
     }
 
-    public CallStatus getCallStatus() {
+    public String getCallStatus() {
         return callStatus;
     }
 
@@ -184,6 +189,18 @@ public class CallDetailRecord {
         return providerExtraData;
     }
 
+    private void addExtraData(String key, String value) {
+        if (value.length() < MAX_EXTRA_DATA_LENGTH) {
+            providerExtraData.put(key, value);
+        } else {
+            String truncatedValue = value.substring(0, MAX_EXTRA_DATA_LENGTH);
+            LOGGER.warn("The value for {} will overflow the providerExtraData field and will be truncated to {}.",
+                key, truncatedValue);
+            providerExtraData.put(key, truncatedValue);
+            LOGGER.warn("The complete value for {} is {}", key, value);
+        }
+    }
+
     /**
      * When receiving call detail information from an IVR provider the specific call details must be mapped from
      * what the provider sends back to MOTECH and a CallDetailRecord object. This method will find which field on the
@@ -199,10 +216,10 @@ public class CallDetailRecord {
     public void setField(String key, String val) {
         String value;
 
-        if (val.length() > MAX_ENTITY_STRING_LENGTH) {
-            LOGGER.warn("The value for {} exceeds {} characters and will be truncated.", key, MAX_ENTITY_STRING_LENGTH);
+        if (val.length() > MAX_FIELD_LENGTH) {
+            LOGGER.warn("The value for {} exceeds {} characters and will be truncated.", key, MAX_FIELD_LENGTH);
             LOGGER.warn("The complete value for {} is {}", key, val);
-            value = val.substring(0, MAX_ENTITY_STRING_LENGTH);
+            value = val.substring(0, MAX_FIELD_LENGTH);
         }  else {
             value = val;
         }
@@ -212,23 +229,13 @@ public class CallDetailRecord {
             Object object;
             try {
                 switch (key) {
-                    case "callStatus":
-                        try {
-                            object = CallStatus.valueOf(value);
-                        } catch (IllegalArgumentException e) {
-                            // Always add unknown call status to the provider extra data, for inspection
-                            LOGGER.warn("Unknown callStatus: {}", value);
-                            providerExtraData.put(key, value);
-                            object = CallStatus.UNKNOWN;
-                        }
-                        break;
                     case  "callDirection":
                         try {
                             object = CallDirection.valueOf(value);
                         } catch (IllegalArgumentException e) {
                             // Always add unknown call directions to the provider extra data, for inspection
                             LOGGER.warn("Unknown callDirection: {}", value);
-                            providerExtraData.put(key, value);
+                            addExtraData(key, value);
                             object = CallDirection.UNKNOWN;
                         }
                         break;
@@ -245,7 +252,7 @@ public class CallDetailRecord {
             }
         } catch (NoSuchFieldException e) {
             LOGGER.info("Extra data from provider: '{}': '{}'", key, value);
-            providerExtraData.put(key, value);
+            addExtraData(key, value);
         }
     }
 

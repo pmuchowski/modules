@@ -16,4 +16,6 @@ public interface ServiceService {
     void delete(String entityID);
 
     Set<Service> update(Set<Service> services);
+
+    Service create(Service service);
 }

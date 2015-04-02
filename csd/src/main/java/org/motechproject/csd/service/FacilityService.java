@@ -22,4 +22,8 @@ public interface FacilityService {
     void delete(String entityID);
 
     Set<Facility> update(Set<Facility> facilities);
+
+    Facility create(Facility facility);
+
+    void delete(Facility facility);
 }

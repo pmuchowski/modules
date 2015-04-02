@@ -50,4 +50,17 @@ public class FacilityServiceImpl implements FacilityService {
         }
         return facilities;
     }
+
+    @Override
+    public Facility create(Facility facility) {
+        if (facility != null) {
+            return facilityDataService.create(facility);
+        }
+        return null;
+    }
+
+    @Override
+    public void delete(Facility facility) {
+        facilityDataService.delete(facility);
+    }
 }

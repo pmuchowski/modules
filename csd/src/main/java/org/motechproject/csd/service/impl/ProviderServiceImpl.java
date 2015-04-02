@@ -47,4 +47,12 @@ public class ProviderServiceImpl implements ProviderService {
         }
         return providers;
     }
+
+    @Override
+    public Provider create(Provider provider) {
+        if (provider != null) {
+            return providerDataService.create(provider);
+        }
+        return null;
+    }
 }

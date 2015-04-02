@@ -1,4 +1,4 @@
-package org.motechproject.csd.scheduler;
+package org.motechproject.csd.listener;
 
 import org.motechproject.csd.CSDEventKeys;
 import org.motechproject.csd.service.CSDService;

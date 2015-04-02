@@ -46,4 +46,12 @@ public class ServiceServiceImpl implements ServiceService {
         }
         return services;
     }
+
+    @Override
+    public Service create(Service service) {
+        if (service != null) {
+            return serviceDataService.create(service);
+        }
+        return null;
+    }
 }

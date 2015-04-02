@@ -13,4 +13,10 @@ public interface ServiceDirectoryService {
     void update(ServiceDirectory serviceDirectory);
 
     Set<Service> getModifiedAfter(DateTime date);
+
+    void addService(Service service);
+
+    void removeService(Service service);
+
+    void update();
 }

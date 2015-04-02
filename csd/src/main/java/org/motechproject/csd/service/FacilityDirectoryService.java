@@ -13,4 +13,10 @@ public interface FacilityDirectoryService {
     void update(FacilityDirectory facilityDirectory);
 
     Set<Facility> getModifiedAfter(DateTime date);
+
+    void addFacility(Facility facility);
+
+    void removeFacility(Facility facility);
+
+    void update();
 }

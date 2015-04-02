@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.csd.CSDEventKeys;
 import org.motechproject.csd.client.CSDHttpClient;
+import org.motechproject.csd.listener.CSDEventListener;
 import org.motechproject.csd.service.CSDService;
 import org.motechproject.event.MotechEvent;
 

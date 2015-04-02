@@ -47,4 +47,12 @@ public class OrganizationServiceImpl implements OrganizationService {
         }
         return organizations;
     }
+
+    @Override
+    public Organization create(Organization organization) {
+        if (organization != null) {
+            return organizationDataService.create(organization);
+        }
+        return null;
+    }
 }

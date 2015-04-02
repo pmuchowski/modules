@@ -9,4 +9,7 @@ public interface FacilityDataService extends MotechDataService<Facility> {
 
     @Lookup
     Facility findByEntityID(@LookupField(name = "entityID") String entityID);
+
+    @Lookup
+    Facility findById(@LookupField(name = "id") Long id);
 }

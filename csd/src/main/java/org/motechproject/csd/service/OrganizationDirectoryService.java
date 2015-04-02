@@ -13,4 +13,10 @@ public interface OrganizationDirectoryService {
     void update(OrganizationDirectory organizationDirectory);
 
     Set<Organization> getModifiedAfter(DateTime date);
+
+    void addOrganization(Organization organization);
+
+    void removeOrganization(Organization organization);
+
+    void update();
 }

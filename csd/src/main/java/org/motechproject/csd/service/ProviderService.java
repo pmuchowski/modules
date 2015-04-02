@@ -16,4 +16,6 @@ public interface ProviderService {
     void delete(String entityID);
 
     Set<Provider> update(Set<Provider> providers);
+
+    Provider create(Provider provider);
 }

@@ -9,4 +9,7 @@ public interface ProviderDataService extends MotechDataService<Provider> {
 
     @Lookup
     Provider findByEntityID(@LookupField(name = "entityID") String entityID);
+
+    @Lookup
+    Provider findById(@LookupField(name = "id") Long id);
 }

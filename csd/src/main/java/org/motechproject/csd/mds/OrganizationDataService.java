@@ -9,4 +9,7 @@ public interface OrganizationDataService extends MotechDataService<Organization>
 
     @Lookup
     Organization findByEntityID(@LookupField(name = "entityID") String entityID);
+
+    @Lookup
+    Organization findById(@LookupField(name = "id") Long id);
 }

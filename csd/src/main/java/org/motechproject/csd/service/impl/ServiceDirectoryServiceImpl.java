@@ -72,4 +72,44 @@ public class ServiceDirectoryServiceImpl implements ServiceDirectoryService {
         }
         return modifiedServices;
     }
+
+    @Override
+    public void addService(final Service service) {
+        serviceDirectoryDataService.doInTransaction(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
+                ServiceDirectory serviceDirectory = getServiceDirectory();
+                Set<Service> services = serviceDirectory.getServices();
+
+                if(!services.contains(service)) {
+                    services.add(service);
+                    serviceDirectoryDataService.update(serviceDirectory);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void removeService(final Service service) {
+        if (service != null) {
+            serviceDirectoryDataService.doInTransaction(new TransactionCallbackWithoutResult() {
+                @Override
+                protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
+                    ServiceDirectory serviceDirectory = getServiceDirectory();
+                    serviceDirectory.getServices().remove(service);
+                    serviceDirectoryDataService.update(serviceDirectory);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void update() {
+        serviceDirectoryDataService.doInTransaction(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
+                serviceDirectoryDataService.update(getServiceDirectory());
+            }
+        });
+    }
 }

@@ -73,4 +73,44 @@ public class ProviderDirectoryServiceImpl implements ProviderDirectoryService {
         }
         return modifiedProviders;
     }
+
+    @Override
+    public void addProvider(final Provider provider) {
+        providerDirectoryDataService.doInTransaction(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
+                ProviderDirectory providerDirectory = getProviderDirectory();
+                Set<Provider> providers = providerDirectory.getProviders();
+
+                if (!providers.contains(provider)) {
+                    providers.add(provider);
+                    providerDirectoryDataService.update(providerDirectory);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void removeProvider(final Provider provider) {
+        if (provider != null) {
+            providerDirectoryDataService.doInTransaction(new TransactionCallbackWithoutResult() {
+                @Override
+                protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
+                    ProviderDirectory providerDirectory = getProviderDirectory();
+                    providerDirectory.getProviders().remove(provider);
+                    providerDirectoryDataService.update(providerDirectory);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void update() {
+        providerDirectoryDataService.doInTransaction(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
+                providerDirectoryDataService.update(getProviderDirectory());
+            }
+        });
+    }
 }

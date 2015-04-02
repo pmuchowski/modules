@@ -73,4 +73,44 @@ public class FacilityDirectoryServiceImpl implements FacilityDirectoryService {
         }
         return modifiedFacilities;
     }
+
+    @Override
+    public void addFacility(final Facility facility) {
+        facilityDirectoryDataService.doInTransaction(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
+                FacilityDirectory facilityDirectory = getFacilityDirectory();
+                Set<Facility> facilities = facilityDirectory.getFacilities();
+
+                if (!facilities.contains(facility)) {
+                    facilities.add(facility);
+                    facilityDirectoryDataService.update(facilityDirectory);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void removeFacility(final Facility facility) {
+        if (facility != null) {
+            facilityDirectoryDataService.doInTransaction(new TransactionCallbackWithoutResult() {
+                @Override
+                protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
+                    FacilityDirectory facilityDirectory = getFacilityDirectory();
+                    facilityDirectory.getFacilities().remove(facility);
+                    facilityDirectoryDataService.update(facilityDirectory);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void update() {
+        facilityDirectoryDataService.doInTransaction(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
+                facilityDirectoryDataService.update(getFacilityDirectory());
+            }
+        });
+    }
 }

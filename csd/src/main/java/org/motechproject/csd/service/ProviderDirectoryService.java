@@ -13,4 +13,10 @@ public interface ProviderDirectoryService {
     void update(ProviderDirectory providerDirectory);
 
     Set<Provider> getModifiedAfter(DateTime date);
+
+    void addProvider(Provider provider);
+
+    void removeProvider(Provider provider);
+
+    void update();
 }

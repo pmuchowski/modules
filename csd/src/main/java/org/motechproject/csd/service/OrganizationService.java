@@ -16,4 +16,6 @@ public interface OrganizationService {
     void delete(String entityID);
 
     Set<Organization> update(Set<Organization> organizations);
+
+    Organization create(Organization organization);
 }

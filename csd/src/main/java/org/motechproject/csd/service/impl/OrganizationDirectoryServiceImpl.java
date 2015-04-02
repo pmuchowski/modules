@@ -73,4 +73,44 @@ public class OrganizationDirectoryServiceImpl implements OrganizationDirectorySe
         }
         return modifiedOrganizations;
     }
+
+    @Override
+    public void addOrganization(final Organization organization) {
+        organizationDirectoryDataService.doInTransaction(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
+                OrganizationDirectory organizationDirectory = getOrganizationDirectory();
+                Set<Organization> organizations = organizationDirectory.getOrganizations();
+
+                if (!organizations.contains(organization)) {
+                    organizations.add(organization);
+                    organizationDirectoryDataService.update(organizationDirectory);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void removeOrganization(final Organization organization) {
+        if (organization != null) {
+            organizationDirectoryDataService.doInTransaction(new TransactionCallbackWithoutResult() {
+                @Override
+                protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
+                    OrganizationDirectory organizationDirectory = getOrganizationDirectory();
+                    organizationDirectory.getOrganizations().remove(organization);
+                    organizationDirectoryDataService.update(organizationDirectory);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void update() {
+        organizationDirectoryDataService.doInTransaction(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
+                organizationDirectoryDataService.update(getOrganizationDirectory());
+            }
+        });
+    }
 }
